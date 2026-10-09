@@ -340,6 +340,55 @@
   .choice-desc{font-size:13px;line-height:1.9;opacity:.85;margin-bottom:18px;}
   .choice-options{display:flex;flex-direction:column;gap:10px;}
   .choice-options .action-btn{width:100%;padding:12px;}
+
+  /* ===== 存档/读档（VLR 式槽位） ===== */
+  #save-modal{
+    position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:58;
+    display:none;align-items:center;justify-content:center;
+  }
+  #save-modal.show{display:flex;}
+  #save-box{
+    max-width:660px;width:94%;border:1px solid var(--accent);padding:22px 26px;
+    background:#05080d;border-radius:4px;box-shadow:0 0 32px rgba(0,0,0,.7);
+    color:var(--accent);max-height:88vh;overflow-y:auto;
+  }
+  .save-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;}
+  .save-head h2{font-size:15px;letter-spacing:5px;margin:0;text-shadow:var(--glow);}
+  .save-head small{opacity:.6;font-size:11px;letter-spacing:1px;}
+  .save-tip{font-size:11px;opacity:.5;letter-spacing:1px;margin-bottom:14px;line-height:1.7;}
+  .slot-row{
+    display:flex;align-items:center;gap:12px;
+    border:1px solid var(--accent-dim);padding:8px 12px;margin-bottom:8px;
+    background:rgba(255,255,255,.02);transition:.15s;
+  }
+  .slot-row:hover{border-color:var(--accent);}
+  .slot-no{font-size:19px;font-weight:bold;width:36px;text-align:center;flex-shrink:0;text-shadow:var(--glow);}
+  .slot-info{flex:1;min-width:0;}
+  .slot-name{font-size:12px;letter-spacing:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .slot-meta{font-size:10px;opacity:.5;margin-top:2px;}
+  .slot-empty{font-size:11px;opacity:.4;}
+  .slot-npcs{display:flex;gap:4px;flex-shrink:0;}
+  .npc-face{
+    width:26px;height:26px;display:flex;align-items:center;justify-content:center;
+    font-size:12px;border-radius:3px;border:1px solid var(--accent-dim);
+    color:#000;font-weight:bold;flex-shrink:0;
+  }
+  .npc-face.unknown{color:var(--accent-dim);font-weight:normal;}
+  .slot-btns{display:flex;gap:6px;flex-shrink:0;}
+  .slot-btn{
+    background:transparent;border:1px solid var(--accent);color:var(--accent);
+    font-family:inherit;font-size:11px;padding:4px 10px;cursor:pointer;letter-spacing:1px;
+  }
+  .slot-btn:hover{background:var(--accent);color:#000;}
+  .slot-btn.danger{border-color:#a05a5a;color:#d99;}
+  .slot-btn.danger:hover{background:#a05a5a;color:#000;}
+  .gallery-row{border-top:1px dashed var(--accent-dim);margin-top:14px;padding-top:12px;}
+  .gallery-label{font-size:11px;letter-spacing:2px;opacity:.6;margin-bottom:10px;}
+  .gallery-faces{display:flex;gap:14px;flex-wrap:wrap;}
+  .gallery-item{text-align:center;}
+  .gallery-item .npc-face{width:38px;height:38px;font-size:16px;margin:0 auto;}
+  .gallery-item .npc-name{font-size:10px;margin-top:4px;opacity:.85;letter-spacing:1px;}
+  .gallery-item.locked .npc-name{opacity:.3;}
 </style>
 </head>
 <body class="theme-b">
@@ -367,7 +416,6 @@
     <div id="quip-bar" class="quip-bar">
       <div class="quip-avatar" id="quip-avatar"></div>
       <div class="quip-content">
-        <div class="quip-name">镜子这头的我 · 碎碎念</div>
         <div class="quip-text" id="quip-text"></div>
       </div>
       <div class="quip-close" onclick="hideQuip()">✕</div>
@@ -385,13 +433,32 @@
   </div>
 </div>
 
+<!-- 存档/读档（双击猫打开） -->
+<div id="save-modal">
+  <div id="save-box">
+    <div class="save-head">
+      <h2>SAVE DATA</h2>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <small id="save-current"></small>
+        <button class="slot-btn" onclick="closeSaveModal()">✕ 返回</button>
+      </div>
+    </div>
+    <div class="save-tip">存档＝把今晚记进总机日志　//　读档＝回到那一晚重来。<br>拯救过的人，会跨过所有夜晚与存档，留在下方的「拯救图鉴」里。</div>
+    <div id="slot-list"></div>
+    <div class="gallery-row">
+      <div class="gallery-label">── 拯救图鉴 · 已完成的拯救故事 ──</div>
+      <div class="gallery-faces" id="gallery-faces"></div>
+    </div>
+  </div>
+</div>
+
 <!-- 引导者：猫头鹰羽毛的猫 -->
-<div id="cat-guide" onclick="toggleCatHint()" role="button" tabindex="0" aria-label="引导者：猫头鹰羽毛的猫">
+<div id="cat-guide" onclick="onCatClick()" role="button" tabindex="0" aria-label="引导者：长着猫头鹰羽毛的猫（单击提示 / 双击存档）">
   <div class="cat-bubble" id="cat-bubble"></div>
   <div class="cat-silhouette" aria-hidden="true">
     <img id="cat-img" src="image/cat_open.png" alt="">
   </div>
-  <div class="cat-caption">猫</div>
+  <div class="cat-caption">猫 · 单击提问 / 双击存档</div>
 </div>
 
 <div id="tutorial">
@@ -408,10 +475,16 @@
     <div class="tut-step">
       <strong>怎么玩（边玩边学）</strong><br>
       ① 去「交接记录」读完白班留的话 → 写第一页，连通白班与夜班<br>
-      ② 翻「物件」里的纸片，读懂 B7 层的三条规矩<br>
+      ② 翻「物件」里的归档委托单，读懂 B7 层的规矩<br>
       ③ 写交接记录问白班 → 白班回规矩 → 做选择<br>
-      ④ 守住规矩 → 下夜班（结局）<br>
-      <span style="opacity:.75">卡住时，点右下角那只长着猫头鹰羽毛的猫，它会告诉你下一步。</span>
+      ④ 守住规矩 → 还有第二夜、第三夜——夜班不是只有一晚<br>
+      <span style="opacity:.75">卡住时，单击右下角的猫，它会告诉你下一步。</span>
+    </div>
+    <div class="tut-step">
+      <strong>存档与图鉴</strong><br>
+      <span class="tut-tag">双击猫</span>可以打开总机日志：九页存档槽，随存随读。<br>
+      每一页都记着当天的进度、值班时长，和你在那一晚里拯救过的人。<br>
+      走到坏结局也不用怕——读档回去，换一个选择，把该带的人带上。
     </div>
     <div class="tut-step">
       <strong>记住：规矩就是规矩</strong><br>
@@ -425,7 +498,10 @@
 <div id="ending">
   <h1>MIRROR · END</h1>
   <p id="ending-text"></p>
-  <button class="action-btn" onclick="location.reload()">重新开始</button>
+  <div style="display:flex;gap:12px;">
+    <button class="action-btn ghost" onclick="location.reload()">回到结局页</button>
+    <button class="action-btn" onclick="location.reload();setTimeout(openSaveModal,600)">读档 · 换一个选择</button>
+  </div>
 </div>
 
 <script>
@@ -458,7 +534,10 @@ const DATE_A_FULL = "白班 · 已经过去的那一天";
 
 function defaultState(){
   return {
-    timeline: "B",            // 开局固定停留在夜班（橘鏡 · 现在）这一侧
+    timeline: "B",            // 开局固定停留在夜班这一侧
+    night: 1,                 // 当前第几夜（1=B7三规矩，2=半杯咖啡，3=奇数层）
+    savedNpcs: [],            // 本存档里拯救过的 NPC id 列表
+    playSeconds: 0,           // 累计游玩时长（秒）
     introRead: [],            // 已读的引导信 id 列表（顺序解锁）
     sendUnlocked: false,      // 是否已解锁【写一段话】入口（读完最后一封引导信后为 true）
     crossUnlocked: false,     // 是否已解锁白班/夜班互看（第一次投递后为 true）
@@ -466,7 +545,7 @@ function defaultState(){
     flags: {
       ideaRequested: false,   // 橘鏡是否已写信求助（问白班这层楼的规则）
       ideaReceived: false,    // 白班（氷川律）是否已回信给出规则提醒
-      reportSent: false,      // 橘鏡是否已通过规则选择并报平安（触发结局）
+      reportSent: false,      // 橘鏡是否已通过规则选择并报平安
       endingSeen: false,
       coffeeRule: null,       // 规则1：茶水间（true=遵守，false=违反，null=未选）
       printerRule: null,      // 规则2：打印机
@@ -487,6 +566,9 @@ function loadState(){
       const merged = defaultState();
       Object.assign(merged, parsed);
       merged.flags = Object.assign(defaultState().flags, parsed.flags || {});
+      merged.savedNpcs = Array.isArray(parsed.savedNpcs) ? parsed.savedNpcs : [];
+      merged.night = parsed.night || 1;
+      merged.playSeconds = parsed.playSeconds || 0;
       return merged;
     }
   }catch(e){}
@@ -494,6 +576,140 @@ function loadState(){
 }
 function saveState(){
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+// ---------- 拯救图鉴：NPC 数据（结局对应遇到/拯救的人） ----------
+// 猫的自称只用「它」；玩家可以称呼它为「猫」。
+const NPCS = [
+  { id:"ai",    name:"水無瀬藍", face:"藍", color:"#7fd4c1", place:"茶水间",
+    story:"『永远半杯咖啡』——她被那半杯困住了。她要的从来不是一杯满的，是有人分她半杯。" },
+  { id:"ritsu", name:"氷川律",   face:"律", color:"#8fa8d9", place:"打印机",
+    story:"『午夜吐纸的打印机』——她把不该知道的事一页页印出来，寄给下一个夜班。" },
+  { id:"hana",  name:"花咲樂",   face:"咲", color:"#e8a0b4", place:"电梯",
+    story:"『只停奇数层的电梯』——面板上的指甲字是她刻的。她还在按门铃，只是按的楼层没人看得见。" },
+];
+
+// ---------- 存档/读档（九页总机日志 + 跨存档图鉴） ----------
+const SLOTS_KEY = "guaitan_slots_v1";
+const GALLERY_KEY = "guaitan_gallery_v1";
+const SLOT_COUNT = 9;
+
+function loadSlots(){ try{ return JSON.parse(localStorage.getItem(SLOTS_KEY)) || {}; }catch(e){ return {}; } }
+function writeSlots(slots){ localStorage.setItem(SLOTS_KEY, JSON.stringify(slots)); }
+function loadGallery(){ try{ return JSON.parse(localStorage.getItem(GALLERY_KEY)) || []; }catch(e){ return []; } }
+function addGallery(ids){
+  const g = loadGallery();
+  ids.forEach(id => { if(!g.includes(id)) g.push(id); });
+  localStorage.setItem(GALLERY_KEY, JSON.stringify(g));
+}
+
+function playTimeLabel(sec){
+  sec = sec || 0;
+  const h = String(Math.floor(sec/3600)).padStart(3,"0");
+  const m = String(Math.floor(sec%3600/60)).padStart(2,"0");
+  const s = String(sec%60).padStart(2,"0");
+  return h+":"+m+":"+s;
+}
+
+// 当前进度名（存档槽上的「ROOM NAME」）
+function progressName(){
+  if(state.flags.endingSeen){
+    if(state.savedNpcs.length >= 3) return "结局 · 天亮了";
+    if(state.savedNpcs.length >= 1) return "结局 · 下班的路上有脚步声";
+    return "结局 · 独自下班";
+  }
+  if(state.night >= 3) return "最终夜 · 只停奇数层";
+  if(state.night === 2) return "第二夜 · 半杯咖啡";
+  if(!state.sendUnlocked) return "B7 · 初到夜班";
+  if(!state.crossUnlocked) return "B7 · 第一页交接";
+  if(!allRulesRevealed()) return "B7 · 收集规矩";
+  if(!state.flags.ideaRequested) return "B7 · 问规矩之前";
+  return "B7 · 规则选择";
+}
+
+function saveToSlot(i){
+  const slots = loadSlots();
+  slots[i] = {
+    savedAt: new Date().toLocaleString("zh-CN",{hour12:false}),
+    playSeconds: state.playSeconds || 0,
+    progress: progressName(),
+    night: state.night || 1,
+    savedNpcs: (state.savedNpcs||[]).slice(),
+    snapshot: JSON.stringify(state),
+  };
+  writeSlots(slots);
+  renderSaveModal();
+  showQuip("记下了——总机日志第 " + (i+1) + " 页。", "ok");
+}
+function loadFromSlot(i){
+  const slots = loadSlots();
+  const s = slots[i];
+  if(!s) return;
+  try{
+    const parsed = JSON.parse(s.snapshot);
+    const merged = defaultState();
+    Object.assign(merged, parsed);
+    merged.flags = Object.assign(defaultState().flags, parsed.flags || {});
+    merged.savedNpcs = Array.isArray(parsed.savedNpcs) ? parsed.savedNpcs : [];
+    merged.night = parsed.night || 1;
+    merged.playSeconds = parsed.playSeconds || 0;
+    state = merged;
+  }catch(e){ return; }
+  saveState();
+  applyTheme();
+  renderApp(currentApp);
+  renderNavDots();
+  renderGoal();
+  closeSaveModal();
+  showQuip("回到了「" + s.progress + "」。那晚的咖啡，还是热的。", "normal");
+}
+function deleteSlot(i){
+  const slots = loadSlots();
+  delete slots[i];
+  writeSlots(slots);
+  renderSaveModal();
+}
+
+function npcFacesHtml(savedIds, total){
+  let html = (savedIds||[]).map(id => {
+    const n = NPCS.find(x => x.id === id);
+    return n ? `<span class="npc-face" style="background:${n.color};border-color:${n.color}" title="${n.name}">${n.face}</span>` : "";
+  }).join("");
+  for(let i = (savedIds||[]).length; i < total; i++) html += `<span class="npc-face unknown">?</span>`;
+  return html;
+}
+
+function openSaveModal(){ renderSaveModal(); $("#save-modal").classList.add("show"); }
+function closeSaveModal(){ $("#save-modal").classList.remove("show"); }
+function renderSaveModal(){
+  $("#save-current").textContent = "当前 · " + progressName() + " · " + playTimeLabel(state.playSeconds);
+  const slots = loadSlots();
+  let html = "";
+  for(let i = 0; i < SLOT_COUNT; i++){
+    const s = slots[i];
+    html += `<div class="slot-row">
+      <div class="slot-no">${String(i+1).padStart(2,"0")}</div>
+      <div class="slot-info">` +
+      (s
+        ? `<div class="slot-name">${escapeHtml(s.progress)}</div><div class="slot-meta">${escapeHtml(s.savedAt)} · ${playTimeLabel(s.playSeconds)} · 第${s.night}夜</div>`
+        : `<div class="slot-empty">── 空白页 ──</div>`) +
+      `</div>
+      <div class="slot-npcs">${s ? npcFacesHtml(s.savedNpcs, NPCS.length) : ""}</div>
+      <div class="slot-btns">
+        <button class="slot-btn" onclick="saveToSlot(${i})">存</button>
+        ${s ? `<button class="slot-btn" onclick="loadFromSlot(${i})">读</button><button class="slot-btn danger" onclick="deleteSlot(${i})">删</button>` : ""}
+      </div>
+    </div>`;
+  }
+  $("#slot-list").innerHTML = html;
+  const g = loadGallery();
+  $("#gallery-faces").innerHTML = NPCS.map(n => {
+    const got = g.includes(n.id);
+    return `<div class="gallery-item ${got ? "" : "locked"}" title="${got ? escapeHtml(n.story) : "尚未拯救"}">
+      <span class="npc-face ${got ? "" : "unknown"}" style="${got ? `background:${n.color};border-color:${n.color}` : ""}">${got ? n.face : "?"}</span>
+      <div class="npc-name">${got ? n.name : "？？？"}</div>
+    </div>`;
+  }).join("");
 }
 
 // ---------- 引导信链（仅反钟镇 / 格雷一侧，顺序解锁） ----------
@@ -556,6 +772,13 @@ function getFiles(tl){
         quip:"『小鏡』……这称呼，也就她叫得出口。", mood:"normal",
         content: "前台压着一张留言条，落款「花咲」。\n\n「小鏡，夜班辛苦啦～今晚电梯有点怪，多停了一层。\n我已经报给系统了，你值夜班的时候别去 B7 层就行。\n回来请你吃司康饼！」"
       },
+      ...(state.night >= 2 ? [
+        {
+          name: "白班失踪名单.txt", locked:false,
+          quip:"三个人……白班的三个人，全都不在出勤表上了。", mood:"creepy",
+          content: "行政部公告栏贴着一张打印纸：\n\n「本部门以下员工已连续多日未出勤，请知悉：\n　水無瀬藍（茶水间值班）\n　氷川律（档案室）\n　花咲樂（前台接待）」\n\n名单下方，有人用铅笔补了一行小字，字迹很轻：\n「他们没失踪。他们只是，没下班。」"
+        },
+      ] : []),
     ];
   }else{
     return [
@@ -587,6 +810,33 @@ function getFiles(tl){
         quip:"奇数层亮着，偶数层全灭，这电梯比我还会挑活。", mood:"creepy",
         content: "B7 层的电梯，按钮面板上只有奇数层亮着。\n偶数层的按钮，被什么东西从里面按灭了。\n\n（角落里，有人用指甲在面板上划了几个字：\n「别按偶数层。」）"
       },
+      ...(state.night >= 2 ? [
+        {
+          name: "归档委托单 HS-037.txt", locked:false,
+          quip:"『它要的不是一杯满的』……归档科的人，写字都这么玄。", mood:"creepy",
+          content: "彼岸事务所 · 异常归档委托单\n\n项目编号：HS-037　　收容等级：Euclid\n项目名：半杯\n\n描述：茶水间咖啡机的产出物。无论以何种方式操作——换杯、换豆、换人——杯子永远保持半满。\n补充记录：凌晨 02:00 前后，咖啡机附近可能出现人影。工牌可辨。请勿与其对视超过三秒。\n\n处置建议（手写补充，笔迹急促）：\n「它不是想要一杯满的咖啡。它想被分到半杯——分、给、它。\n　满杯是违反收容的。半杯，是接它回家。」\n\n——该条目由白班 氷川律 补录"
+        },
+        {
+          name: "茶水间监控截图.jpg", locked:false,
+          mediaType:"image",
+          mediaName:"image/pantry_cctv.jpg",
+          mediaHint:"建议素材：茶水间监控截图，凌晨两点，咖啡机前站着一个穿白班制服的短发人影，双手捧着一只只装了半杯的纸杯，画面噪点很重。",
+          quip:"监控里的她，捧着那半杯……站了多久了？", mood:"creepy",
+          content: "一段监控截图，时间戳 02:00:00。\n\n咖啡机前站着一个穿白班制服的人影，短头发，双手捧着一只纸杯。\n杯子里的咖啡，正好半杯。\n\n（截图角落的系统标注：\n「该员工出勤记录：已注销 11 天。」）"
+        },
+      ] : []),
+      ...(state.night >= 3 ? [
+        {
+          name: "收容失效报告 HS-011.txt", locked:false,
+          quip:"纸不是警告，是求救信——律，你早就把答案印给我们了。", mood:"creepy",
+          content: "彼岸事务所 · 收容失效报告\n\n项目编号：HS-011　　收容等级：Keter（提案降级 Euclid）\n项目名：午夜印刷机\n\n描述：每日 00:00 自动启动，产出记载『不该被知道之事』的纸张。阅读者会出现认知污染症状。\n\n事故记录：经笔迹比对，产出纸张与档案室员工 氷川律 的笔迹完全一致。\n推定：她没有把记忆交给怪谈——她在把记忆一页一页印出来，寄给下一个值夜班的人。\n\n处置建议（手写）：\n「纸不是警告。是求救信。\n　去把打印机关掉——关掉的方法只有一种：让它知道，纸已经被读到了。\n　念出最后一页的落款。她的名字，念出来，她就能停机。」"
+        },
+        {
+          name: "归档委托单 HS-053.txt", locked:false,
+          quip:"『她还在按门铃』——这话说得，我都不想下班了。", mood:"creepy",
+          content: "彼岸事务所 · 异常归档委托单\n\n项目编号：HS-053　　收容等级：Euclid\n项目名：只停奇数层的电梯\n\n描述：B7 层电梯的偶数层按钮，从轿厢内部被逐个按灭。面板角落有指甲划痕，排列成文字：「别按偶数层」。\n\n关联记录：前台员工 花咲樂 的工牌，在轿厢地板缝中被发现。人未找到。\n\n处置建议（手写，字迹潦草）：\n「她还在按门铃。只是她按的楼层，我们的面板上没有。\n　第二夜之后，电梯会在 02:00 再停一次 B7。门开的时候，里面站着的人——\n　别问电梯去几层。伸手，把人接出来。」"
+        },
+      ] : []),
     ];
   }
 }
@@ -752,6 +1002,24 @@ function buildMailList(tl){
         quip:m.quip, mood:m.mood,
       });
     });
+    if(state.night === 2 && state.flags.reportSent){
+      list.push({
+        kind:"sysB", id:"sys-n2", from:"交接记录本", time:"02:00",
+        subject:"第二夜 · 茶水间有声音",
+        body:"交接记录本上，多了一页不是你写的字：\n\n「守住了？那就还有下一夜。\n今晚 02:00，茶水间的咖啡机会空转。去「物件」把归档单 HS-037 读了，别到时候两眼一抹黑。\n\n对了——茶水间里那个人影，你有印象吗。\n白班缺的那个人里，有一个叫 水無瀬藍。」\n\n（读完这一页，今晚的事，就开始了。）",
+        locked:false, read: state.filesRead["B:__sys-n2"] === true,
+        quip:"又是先斩后奏。行，读。", mood:"creepy",
+      });
+    }
+    if(state.night >= 3 && !state.flags.endingSeen){
+      list.push({
+        kind:"sysB", id:"sys-n3", from:"交接记录本", time:"01:57",
+        subject:"最终夜 · 电梯会再停一次",
+        body:"交接记录本的字迹，比上一夜更急：\n\n「最后一夜了。\n02:00，电梯会再停一次 B7——里面的，是你认识的另一个人。\n打印机也会在同一时刻醒过来。它吐出来的纸，最后一页有落款。\n\n去「物件」把 HS-011 和 HS-053 读完。\n然后记住：这层楼只给你一次电梯。\n\n带谁走，你自己定。别辜负守了三夜的规矩。」",
+        locked:false, read: state.filesRead["B:__sys-n3"] === true,
+        quip:"『只给你一次电梯』……好，那就不浪费。", mood:"creepy",
+      });
+    }
   }else{
     list.push({
       kind:"sys", id:"sys-welcome", from:"彼岸事务所 · 白班系统", time:"白天",
@@ -925,6 +1193,14 @@ function markMailRead(m){
   }else if(m.kind === "sys" || m.kind === "sys2" || m.kind === "sys3" || m.kind === "sys4"){
     const key = "A:__" + m.id;
     if(!state.filesRead[key]){ state.filesRead[key] = true; saveState(); }
+  }else if(m.kind === "sysB"){
+    const key = "B:__" + m.id;
+    if(!state.filesRead[key]){
+      state.filesRead[key] = true;
+      saveState();
+      if(m.id === "sys-n2") setTimeout(startNight2Event, 800);
+      if(m.id === "sys-n3") setTimeout(startNight3Event, 800);
+    }
   }else if(m.kind === "received"){
     const rec = state.sentMails.find(x => x.id === m.id);
     if(rec && !rec.read){ rec.read = true; saveState(); }
@@ -944,9 +1220,17 @@ function renderSystem(){
     const done = f[r.id + "Rule"] === true;
     return `<div class="flag-row"><span>${r.icon} ${r.title} 的规矩</span><span class="flag-val ${revealed?"on":"off"}">${revealed ? (done ? "已守" : "已懂") : "未知"}</span></div>`;
   }).join("");
+  const savedFaces = (state.savedNpcs||[]).map(id => {
+    const n = NPCS.find(x => x.id === id);
+    return n ? n.name : id;
+  }).join("、") || "（还没有）";
   mainEl.innerHTML = `
     <div class="panel-title">值班状态</div>
-    <div style="margin:8px 0 4px;font-size:11px;opacity:.5;letter-spacing:1px;">— B7 层规则 —</div>
+    <div style="margin:8px 0 4px;font-size:11px;opacity:.5;letter-spacing:1px;">— 值班日志 —</div>
+    <div class="flag-row"><span>当前夜数</span><span class="flag-val on">${["","第一夜 · B7 三规矩","第二夜 · 半杯咖啡","最终夜 · 只停奇数层"][state.night] || "第" + state.night + "夜"}</span></div>
+    <div class="flag-row"><span>值班时长</span><span class="flag-val on">${playTimeLabel(state.playSeconds)}</span></div>
+    <div class="flag-row"><span>已拯救的人（本存档）</span><span class="flag-val on">${escapeHtml(savedFaces)}</span></div>
+    <div style="margin:8px 0 4px;font-size:11px;opacity:.5;letter-spacing:1px;">— 第一夜 · B7 层规则 —</div>
     ${ruleRows}
     <div style="margin:8px 0 4px;font-size:11px;opacity:.5;letter-spacing:1px;">— 交接进度 —</div>
     <div class="flag-row"><span>第一页：橘鏡问规矩</span><span class="flag-val ${f.ideaRequested?"on":"off"}">${f.ideaRequested?"已写":"未写"}</span></div>
@@ -954,9 +1238,10 @@ function renderSystem(){
     <div class="flag-row"><span>规则选择</span><span class="flag-val ${f.reportSent?"on":"off"}">${f.reportSent?"已做":"未做"}</span></div>
     <div class="flag-row"><span>白班/夜班已连通</span><span class="flag-val ${state.crossUnlocked?"on":"off"}">${state.crossUnlocked?"YES":"NO"}</span></div>
     <div class="flag-row"><span>【写交接记录】入口已解锁</span><span class="flag-val ${state.sendUnlocked?"on":"off"}">${state.sendUnlocked?"YES":"NO"}</span></div>
-    <div class="hint">流程：翻「物件」读懂三条规矩 → 写交接记录问白班 → 白班回规矩 → 做规则选择（守住三条规矩就能下夜班）→ 结局。</div>
+    <div class="hint">流程：第一夜守三条规矩 → 第二夜茶水间（HS-037）→ 最终夜电梯（HS-011 / HS-053）→ 结局按拯救人数分支。<br>双击右下角的猫 = 总机日志（存档 / 读档 / 拯救图鉴）。</div>
     <div style="margin-top:24px;">
-      <button class="action-btn" onclick="if(confirm('确定要重置全部进度吗？')){localStorage.removeItem('${STORAGE_KEY}');location.reload();}">重置存档</button>
+      <button class="action-btn" onclick="if(confirm('确定要重置本页进度吗？（存档槽与图鉴不受影响）')){localStorage.removeItem('${STORAGE_KEY}');location.reload();}">重置本页进度</button>
+      <button class="action-btn ghost" onclick="openSaveModal()">打开总机日志</button>
     </div>
   `;
 }
@@ -1025,31 +1310,110 @@ function finishRuleChoice(){
   state.flags.reportSent = true;
   saveState();
   if(allOk){
-    showQuip("三条规矩都守住了。电梯门，终于亮起了离去的按钮。", "ok");
+    // 夜 1 通过 → 进入第二夜（长线流程，不在此结局）
+    state.night = 2;
+    saveState();
+    showQuip("三条规矩，一条没碰。但你还没下班——交接本上，浮出了新的一页。", "ok");
     renderMail();
     renderNavDots();
     renderGoal();
-    setTimeout(triggerEnding, 700);
   }else{
     showQuip("坏了。你违反了规矩。这层楼，不打算放你走了。", "fail");
     triggerBadEnding();
   }
 }
-function triggerBadEnding(){
+
+// ---- 坏结局（各夜违反规矩 / 事件选错） ----
+function triggerBadEnding(extra){
   if(state.flags.endingSeen) return;
   state.flags.endingSeen = true;
   saveState();
-  $("#ending-text").textContent = "你被「录用」了。\n\n茶水间多了一个永远泡咖啡的人，打印机前多了一个永远低头看纸的人，电梯里多了一个再也按不到离去键的人。\n\n（怪谈降临也要上班 · 坏结局 · 试玩版）";
+  const base = "你被「录用」了。\n\n茶水间多了一个永远泡咖啡的人，打印机前多了一个永远低头看纸的人，电梯里多了一个再也按不到离去键的人。";
+  $("#ending-text").textContent = (extra ? extra + "\n\n" : "") + base + "\n\n（读档回去。规矩，就是规矩。）";
   $("#ending").classList.add("show");
 }
 
-// ---- 结局 ----
-function triggerEnding(){
+// ---- 第二夜事件：半杯咖啡（水無瀬藍） ----
+function startNight2Event(){
+  $("#choice-title").textContent = "第二夜 · 半杯咖啡";
+  $("#choice-desc").textContent = "凌晨两点，茶水间的咖啡机空转起来。\n你走过去——机器前站着一个穿白班制服的短发人影，工牌上写着「水無瀬藍」。\n她脚边积了一圈浅褐色的水渍，手里的纸杯，永远只有半杯。\n\n她转过头，声音很轻：「帮我把它倒满，好不好？就一次。」";
+  $("#choice-options").innerHTML = `
+    <button class="action-btn" onclick="pickNight2(0)">把你自己的半杯，连杯递给她</button>
+    <button class="action-btn" onclick="pickNight2(1)">按规矩提醒她：咖啡永远泡不满</button>
+    <button class="action-btn" onclick="pickNight2(2)">帮她把咖啡倒满</button>
+  `;
+  $("#choice-popup").classList.add("show");
+}
+function pickNight2(i){
+  $("#choice-popup").classList.remove("show");
+  if(i === 0){
+    // 归档单 HS-037 的处置建议：分它半杯 → 拯救
+    if(!state.savedNpcs.includes("ai")) state.savedNpcs.push("ai");
+    addGallery(["ai"]);
+    state.night = 3;
+    saveState();
+    showQuip("她愣住了，然后接过了那半杯。咖啡机的声音，第一次停了。", "ok");
+    setTimeout(()=>showQuip("交接本浮出新的字迹：「干得好。还有最后一夜。」", "normal"), 3200);
+  }else if(i === 1){
+    state.night = 3;
+    saveState();
+    showQuip("她笑了笑：「对啊，永远泡不满。」然后人影就淡了下去。", "creepy");
+    setTimeout(()=>showQuip("交接本浮出新的字迹：「……你只是没读归档单的最后一行。最后一夜，别再这样了。」", "normal"), 3200);
+  }else{
+    showQuip("咖啡机轰然作响，水面漫过杯沿——", "fail");
+    setTimeout(()=>triggerBadEnding("你把咖啡倒满了。\n\nHP-037 收容失效。你成了茶水间新的值班员——那个永远想把咖啡倒满的人。"), 900);
+    return;
+  }
+  renderMail();
+  renderNavDots();
+  renderGoal();
+}
+
+// ---- 最终夜事件：只停奇数层的电梯（花咲樂 / 氷川律） ----
+function startNight3Event(){
+  $("#choice-title").textContent = "最终夜 · 电梯只停一次";
+  $("#choice-desc").textContent = "凌晨两点，电梯又停在了 B7。门开的瞬间——\n里面站着一个抱着纸箱的前台，工牌「花咲樂」。她身后的打印机正在吐纸，无穷无尽，最后一页飘落在你脚边，落款是「氷川律」。\n\n电梯的按钮面板上，只有一个「1」还亮着。\n门，只开这一次。";
+  $("#choice-options").innerHTML = `
+    <button class="action-btn" onclick="pickNight3(0)">拉住花咲的手，按下「1」</button>
+    <button class="action-btn" onclick="pickNight3(1)">先冲进打印机，念出最后一页的落款</button>
+    <button class="action-btn" onclick="pickNight3(2)">左手拉花咲，右手念落款——两个都带上</button>
+    <button class="action-btn ghost" onclick="pickNight3(3)">什么都不做，自己走进电梯</button>
+  `;
+  $("#choice-popup").classList.add("show");
+}
+function pickNight3(i){
+  $("#choice-popup").classList.remove("show");
+  if(i === 0){
+    if(!state.savedNpcs.includes("hana")) state.savedNpcs.push("hana");
+    addGallery(["hana"]);
+  }else if(i === 1){
+    if(!state.savedNpcs.includes("ritsu")) state.savedNpcs.push("ritsu");
+    addGallery(["ritsu"]);
+  }else if(i === 2){
+    if(!state.savedNpcs.includes("hana")) state.savedNpcs.push("hana");
+    if(!state.savedNpcs.includes("ritsu")) state.savedNpcs.push("ritsu");
+    addGallery(["hana","ritsu"]);
+  }
+  saveState();
+  triggerFinalEnding();
+}
+
+// ---- 结局（按拯救人数分支） ----
+function triggerFinalEnding(){
   if(state.flags.endingSeen) return;
   state.flags.endingSeen = true;
   saveState();
-  $("#ending-text").textContent =
-    "电梯停在了一层你认识的地方。\n门打开，是熟悉的办公区，是白班同事工位上的台灯。\n\n你活过了今晚。\n三条规矩，一条都没碰。\n\n交接记录本上，白班写来了一行字：\n「守规矩的人，才配下班。」\n\n（怪谈降临也要上班 · 试玩版 · 完）";
+  const n = state.savedNpcs.length;
+  let text;
+  if(n >= 3){
+    text = "「天亮了」\n\n电梯上行的时候，轿厢里挤挤挨挨站了四个人。\n蓝捧着那半杯咖啡，律抱着一摞终于印完的纸，花咲在念叨司康饼是不是凉了。\n\n门打开，是一层的办公区。窗外，天边泛起一点灰白。\n交接记录本摊在你手里，最后一页自动浮出一行字：\n「全员下班。明晚——不用来了。」\n\n你救出了所有被困在规矩里的人。\n这层楼，再也用不着夜班了。";
+  }else if(n >= 1){
+    text = "「下班的路上，多了一串脚步声」\n\n电梯上行，你身边站着 " + n + " 个白班的同事。\n" + (n === 1 ? "TA 的工牌在灯下轻轻晃。" : "他们的工牌在灯下轻轻晃。") + "\n\n门开了。你走出了 B7。\n可交接记录本沉甸甸地压在包里——上面还记着没带走的人。\n\n（拯救图鉴里，还有空着的格子。）";
+  }else{
+    text = "「独自下班」\n\n电梯门在你身后合拢，把那两道声音关在了 B7。\n你守住了所有规矩，也只带走了你自己。\n\n一层的办公区灯火通明，白班的工位上，三张桌子空着。\n桌上各放着一只凉透的纸杯——都只有半杯。";
+  }
+  text += "\n\n（怪谈降临也要上班 · " + (n >= 3 ? "真结局 · 完" : "结局 · 想带齐所有人？读档回去，把该带的人带上") + "）";
+  $("#ending-text").textContent = text;
   $("#ending").classList.add("show");
 }
 
@@ -1073,7 +1437,7 @@ $("#tl-toggle-btn").addEventListener("click", toggleTimeline);
 $$(".nav-item").forEach(nav => nav.addEventListener("click", () => switchApp(nav.dataset.app)));
 
 // ---- 引导者：猫头鹰羽毛的猫 ----
-// 猫只用第三人称说话：自称「猫」，指玩家用「他 / 她」。
+// 猫只用第三人称说话：自称只用「它」（玩家可以称它为「猫」，但猫不会自称「猫」）。
 let catBubbleOpen = false;
 
 function catPronoun(){
@@ -1086,7 +1450,7 @@ function catIdle(){
   return p + "想知道什么！它可以告诉" + p + "——";
 }
 
-// 被点击后的引导提示：按进度给出沉浸式的一句指引
+// 被点击后的引导提示：按进度给出沉浸式的一句指引（覆盖三夜全流程）
 function catHint(){
   if(!state.sendUnlocked){
     return "他刚进夜班，什么都不懂。让他去「交接记录」翻翻——白班留了话，一页一页读，读完，才轮到他写。";
@@ -1095,21 +1459,46 @@ function catHint(){
     return "交接本在等他先开口。让他写一页，投进去——白班的人，会接住的。";
   }
   if(!allRulesRevealed()){
-    return "这层楼有它自己的规矩。让他去「物件」翻翻那些纸片——咖啡、打印机、电梯，规矩都写在缝里。";
+    return "这层楼有它自己的规矩。让他去「物件」翻翻那些归档单——咖啡、打印机、电梯，规矩都写在缝里。";
   }
   if(!state.flags.ideaRequested){
-    return "他读懂了三条规矩。让他写一页交接，问问白班——猫说的，到底对不对。";
+    return "他读懂了三条规矩。让他写一页交接，问问白班——它说的，到底对不对。";
   }
   if(!state.flags.ideaReceived){
     return "轮到白班回话了。去「交接记录」，把三条规矩写给他。";
   }
   if(!state.flags.reportSent){
-    return "规矩到了。该他做选择了——茶水间、打印机、电梯。守得住，就下得来。";
+    return "规矩到了。该他做选择了——茶水间、打印机、电梯。守得住，才过得了第一夜。";
   }
-  if(!state.flags.endingSeen){
-    return "夜班，要结束了。让他坐进电梯，按下离去的按钮。";
+  if(state.night === 2 && !state.filesRead["B:__sys-n2"]){
+    return "第一夜他守住了，可夜班没完。让他去「交接记录」——交接本上浮出了新的一页。";
   }
-  return "夜班结束了。猫会记得的——这一晚，规矩没有被打破。";
+  if(state.night === 2){
+    return "茶水间在等他。归档单 HS-037 的最后一行写了什么，让他再读一遍——满杯不是答案，半杯才是。";
+  }
+  if(state.night >= 3 && !state.filesRead["B:__sys-n3"]){
+    return "最后一夜了。让他先看「交接记录」——电梯只停一次，去哪层、带谁走，都得先想清楚。";
+  }
+  if(state.night >= 3 && !state.flags.endingSeen){
+    return "打印机、电梯，二选一……还是两个都带上？归档单 HS-011 写着念落款的方法。让他赌一次大的。";
+  }
+  return "夜班结束了。它会记得的——这一晚，他救了谁，它都记在图鉴里。";
+}
+
+// 单击＝提问提示；双击＝总机日志（存档/读档）
+let catClickTimer = null;
+function onCatClick(){
+  if(catClickTimer){
+    clearTimeout(catClickTimer);
+    catClickTimer = null;
+    catBubbleOpen = false;
+    openSaveModal();
+    return;
+  }
+  catClickTimer = setTimeout(() => {
+    catClickTimer = null;
+    toggleCatHint();
+  }, 280);
 }
 
 function toggleCatHint(){
@@ -1152,6 +1541,11 @@ if(!state.tutorialSeen){
   setTimeout(showTutorial, 400);
 }
 renderNavDots();
+// 游玩时长计时（每秒累计，定期落盘）
+setInterval(() => { state.playSeconds = (state.playSeconds || 0) + 1; }, 1000);
+setInterval(() => {
+  if(!state.flags.endingSeen) saveState();
+}, 15000);
 </script>
 </body>
 </html>
