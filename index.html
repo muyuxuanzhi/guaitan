@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>镜中来客 · 苔丝与反钟镇</title>
+<title>怪谈降临也要上班 · B7层</title>
 <style>
   :root{
     --scan-op:.06;
@@ -17,8 +17,8 @@
   }
 
   /* ===== 主题：阁楼(苔丝·现在) = 绿色荧光屏 / 反钟镇(格雷·永远的六点) = 蓝色荧光屏 ===== */
-  body.theme-a{ --accent:#4dffb8; --accent-dim:#1f6b4d; --bg:#03100b; --glow:0 0 6px rgba(77,255,184,.55); }
-  body.theme-b{ --accent:#4da8ff; --accent-dim:#1c4a7a; --bg:#020a14; --glow:0 0 6px rgba(77,168,255,.55); }
+  body.theme-a{ --accent:#c8d8e8; --accent-dim:#4a5a6a; --bg:#080a0c; --glow:0 0 6px rgba(200,216,232,.5); }
+  body.theme-b{ --accent:#e8c96a; --accent-dim:#6b541f; --bg:#100b02; --glow:0 0 6px rgba(232,201,106,.55); }
 
   #crt{
     position:relative;width:100vw;height:100vh;
@@ -313,55 +313,33 @@
   .calc-digit.locked:hover{background:transparent;color:var(--accent);}
   .calc-actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;}
 
-  /* ===== 钟码口袋（背包） ===== */
-  .panel-section{
-    font-size:12px;letter-spacing:2px;opacity:.7;
-    margin:18px 0 10px;border-bottom:1px dashed var(--accent-dim);padding-bottom:6px;
+  /* ===== 规则面板 ===== */
+  .rule-row{
+    display:flex;gap:12px;align-items:flex-start;
+    padding:14px;border:1px solid var(--accent-dim);border-radius:6px;
+    margin-bottom:10px;
   }
-  .panel-section:first-child{margin-top:0;}
-  .code-bag{
-    display:flex;flex-wrap:wrap;gap:8px;
-    padding:12px;border:1px dashed var(--accent-dim);
-    min-height:52px;
-  }
-  .code-bag .bag-empty{opacity:.5;font-size:12px;letter-spacing:1px;align-self:center;}
-  .code-chip{
-    display:inline-flex;flex-direction:column;align-items:center;gap:1px;
-    padding:7px 11px;border:1px solid var(--accent);border-radius:6px;
-    cursor:pointer;font-size:11px;letter-spacing:1px;
-    box-shadow:var(--glow);transition:.15s;min-width:42px;
-  }
-  .code-chip:hover{background:var(--accent);color:#000;}
-  .code-chip .chip-name{font-size:9px;opacity:.75;}
-  .code-chip .chip-num{font-size:17px;font-weight:600;}
+  .rule-row .rule-icon{font-size:22px;line-height:1.2;flex-shrink:0;}
+  .rule-row .rule-body{flex:1;min-width:0;}
+  .rule-row .rule-body b{font-size:14px;letter-spacing:2px;color:var(--accent);}
+  .rule-row .rule-body p{font-size:12px;line-height:1.8;margin:4px 0 0;opacity:.85;}
+  .rule-row .rule-unknown{opacity:.45;}
 
-  /* ===== 开门：放置格子 ===== */
-  #door-popup{
+  /* ===== 规则选择弹窗 ===== */
+  #choice-popup{
     position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:55;
     display:none;align-items:center;justify-content:center;
   }
-  #door-popup.show{display:flex;}
-  #door-box{
-    max-width:480px;width:92%;border:1px solid var(--accent);padding:26px 30px;
+  #choice-popup.show{display:flex;}
+  #choice-box{
+    max-width:440px;width:92%;border:1px solid var(--accent);padding:28px 30px;
     background:#05080d;border-radius:4px;box-shadow:0 0 32px rgba(77,200,255,.12);
-    color:var(--accent);
+    color:var(--accent);text-align:center;
   }
-  #door-box h2{font-size:15px;letter-spacing:3px;margin:0 0 6px;text-shadow:var(--glow);}
-  .door-meta{font-size:12px;opacity:.85;margin-bottom:4px;letter-spacing:1px;}
-  .door-desc{font-size:12px;opacity:.6;line-height:1.8;margin-bottom:6px;}
-  .door-slots{display:flex;gap:10px;justify-content:center;margin:12px 0;}
-  .door-slot{
-    width:58px;height:58px;border:1px dashed var(--accent);border-radius:8px;
-    display:flex;flex-direction:column;align-items:center;justify-content:center;
-    font-size:9px;color:var(--accent);cursor:pointer;gap:1px;opacity:.85;
-  }
-  .door-slot.filled{border-style:solid;box-shadow:var(--glow);opacity:1;}
-  .door-slot .slot-num{font-size:19px;font-weight:600;}
-  .door-slot .slot-name{font-size:9px;opacity:.7;}
-  .door-bag-label{font-size:11px;opacity:.6;margin:6px 0 8px;letter-spacing:1px;text-align:center;}
-  .door-bag{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;min-height:40px;}
-  .door-actions{display:flex;gap:10px;justify-content:center;margin-top:18px;}
-  .door-err{font-size:12px;color:#ff6767;text-align:center;margin-top:10px;min-height:16px;}
+  #choice-box h2{font-size:16px;letter-spacing:3px;margin:0 0 12px;text-shadow:var(--glow);}
+  .choice-desc{font-size:13px;line-height:1.9;opacity:.85;margin-bottom:18px;}
+  .choice-options{display:flex;flex-direction:column;gap:10px;}
+  .choice-options .action-btn{width:100%;padding:12px;}
 </style>
 </head>
 <body class="theme-b">
@@ -369,9 +347,9 @@
 <div id="crt"><div id="screen">
 
   <div id="topbar">
-    <div class="title">镜中来客 · 苔丝与反钟镇<small id="title-sub">MIRROR_LINK // 反钟镇 · 永远的下午六点</small></div>
+    <div class="title">怪谈降临也要上班<small id="title-sub">彼岸事务所 // 夜班 · 现在</small></div>
     <div id="tl-control">
-      <span id="tl-locked-hint" class="locked-hint">［镜面只映出反钟镇］把该读的信都读完，说不定镜子会展示更多……</span>
+      <span id="tl-locked-hint" class="locked-hint">［交接本只连着夜班］把白班留的话都读完，说不定就能切到白班那边……</span>
       <button id="tl-toggle-btn" class="tl-toggle" style="display:none;"></button>
     </div>
     <button id="tutorial-open-btn" class="tl-toggle" onclick="showTutorial()">📖 教程</button>
@@ -380,10 +358,10 @@
 
   <div id="body">
     <div id="nav">
-      <div class="nav-item active" data-app="calc"><span class="dot"></span>钟码算盘</div>
-      <div class="nav-item" data-app="files"><span class="dot"></span>物件</div>
-      <div class="nav-item" data-app="mail"><span class="dot"></span>书信</div>
-      <div class="nav-item" data-app="system"><span class="dot"></span>镜面状态</div>
+      <div class="nav-item active" data-app="rule"><span class="dot"></span>规则</div>
+      <div class="nav-item" data-app="files"><span class="dot"></span>线索</div>
+      <div class="nav-item" data-app="mail"><span class="dot"></span>交接记录</div>
+      <div class="nav-item" data-app="system"><span class="dot"></span>值班状态</div>
     </div>
     <div id="main"></div>
     <div id="quip-bar" class="quip-bar">
@@ -398,20 +376,12 @@
 
 </div></div>
 
-<!-- 开门：放置格子弹窗 -->
-<div id="door-popup">
-  <div id="door-box">
-    <h2 id="door-title">井边锈铁盒</h2>
-    <div class="door-meta" id="door-meta"></div>
-    <div class="door-desc" id="door-desc"></div>
-    <div class="door-slots" id="door-slots"></div>
-    <div class="door-bag-label">从下面的钟码口袋，挑数字放进格子：</div>
-    <div class="door-bag" id="door-bag"></div>
-    <div class="door-err" id="door-err"></div>
-    <div class="door-actions">
-      <button class="action-btn ghost" onclick="closeDoor()">取消</button>
-      <button class="action-btn" onclick="confirmDoor()">开锁</button>
-    </div>
+<!-- 规则选择弹窗 -->
+<div id="choice-popup">
+  <div id="choice-box">
+    <h2 id="choice-title">茶水间</h2>
+    <div class="choice-desc" id="choice-desc"></div>
+    <div class="choice-options" id="choice-options"></div>
   </div>
 </div>
 
@@ -426,29 +396,29 @@
 
 <div id="tutorial">
   <div id="tutorial-box">
-    <h2>欢迎来到镜中来客</h2>
+    <h2>欢迎来到怪谈处理公司</h2>
     <div class="tut-goal">
       <span class="tut-goal-label">▶ 猫这样说道</span>
       <p id="tut-goal-text"></p>
     </div>
     <div class="tut-step">
       <strong>你在哪里？</strong><br>
-      你现在站在<span class="tut-tag">反钟镇</span>里——一个钟永远停在下午六点的地方。镜子那头是<span class="tut-tag">阁楼</span>，住着一个叫苔丝的女孩。两边只能靠<em>写信</em>来传话。
+      你是<span class="tut-tag">彼岸事务所</span>的夜班员工。今晚值班，电梯把你带到了不该存在的<span class="tut-tag">B7 层</span>。这里和「白班」之间，只靠一本<em>交接记录本</em>传话。
     </div>
     <div class="tut-step">
-      <strong>完整流程（边玩边学）</strong><br>
-      ① 去「书信」读完引导信 → 写第一封信，打通镜子两端<br>
-      ② 切「阁楼」「反钟镇」读「物件」，收集文字里的钟码<br>
-      ③ 点「物件」里的锁，放进钟码开门（数字根）<br>
-      ④ 三封信推进剧情 → 结局<br>
+      <strong>怎么玩（边玩边学）</strong><br>
+      ① 去「交接记录」读完白班留的话 → 写第一页，连通白班与夜班<br>
+      ② 翻「物件」里的纸片，读懂 B7 层的三条规矩<br>
+      ③ 写交接记录问白班 → 白班回规矩 → 做选择<br>
+      ④ 守住规矩 → 下夜班（结局）<br>
       <span style="opacity:.75">卡住时，点右下角那只长着猫头鹰羽毛的猫，它会告诉你下一步。</span>
     </div>
     <div class="tut-step">
-      <strong>数字根速记</strong><br>
-      几个数字相加，超过一位就再相加，直到只剩一位。例：<code>1+8+6=15→6</code>。<br>
-      门刻着「根数」和「契数」，凑对即开——点锁住的物件，放进钟码。
+      <strong>记住：规矩就是规矩</strong><br>
+      咖啡泡不满、打印机午夜会响、电梯只去奇数层——<br>
+      每一条，都是保命的规矩。违反的人，会被这层楼「留下」。
     </div>
-    <button class="action-btn" id="tutorial-close" onclick="closeTutorial()">明白了，去试试</button>
+    <button class="action-btn" id="tutorial-close" onclick="closeTutorial()">明白了，去值班</button>
   </div>
 </div>
 
@@ -481,34 +451,29 @@
 const STORAGE_KEY = "mirror_visitor_save_v1";
 
 // 两个世界的名字（原方案里"相隔七天的两个日期"，在这里换成"镜子两端的两个世界"）
-const DATE_B_SHORT = "反钟镇";
-const DATE_A_SHORT = "阁楼";
-const DATE_B_FULL = "反钟镇 · 永远的下午六点";
-const DATE_A_FULL = "苔丝的阁楼 · 现在";
+const DATE_B_SHORT = "夜班";
+const DATE_A_SHORT = "白班";
+const DATE_B_FULL = "夜班 · 现在";
+const DATE_A_FULL = "白班 · 已经过去的那一天";
 
 function defaultState(){
   return {
-    timeline: "B",            // 开局固定停留在反钟镇（格雷）这一侧
+    timeline: "B",            // 开局固定停留在夜班（橘鏡 · 现在）这一侧
     introRead: [],            // 已读的引导信 id 列表（顺序解锁）
     sendUnlocked: false,      // 是否已解锁【写一段话】入口（读完最后一封引导信后为 true）
-    crossUnlocked: false,     // 是否已解锁镜子两端互看（第一次投信后为 true）
-    tutorialSeen: false,      // 是否已看过新手指引（镜子的使用说明）
+    crossUnlocked: false,     // 是否已解锁白班/夜班互看（第一次投递后为 true）
+    tutorialSeen: false,      // 是否已看过新手指引（交接本的使用说明）
     flags: {
-      gotAccessCode: false,     // 苔丝（阁楼）是否已看过旧怀表说明卡（收集钟码 1、8）
-      watchedVideo: false,      // 苔丝（阁楼）是否已看过老照片（收集钟码 6、0）
-      decryptedReport: false,   // 格雷（反钟镇）是否已打开"井边锈铁盒"（得到争执记录）
-      decryptedDiary: false,    // 格雷（反钟镇）是否已打开"格雷日记木箱"（得到格雷日记）
-      openedTreeHole: false,    // 格雷（反钟镇）是否已打开"时间树树洞"（得到年轮真相）
-      clockTicked: false,       // 格雷（反钟镇）是否已打开"钟楼齿轮闸"（钟走了一分钟）
-      ideaRequested: false,     // 格雷是否已写信求助（争执真相→求点子）
-      ideaReceived: false,      // 苔丝是否已把"续杯邀请函"的点子写信送回反钟镇
-      reportSent: false,        // 格雷是否已把"成功了"的最终回信送出（触发结局）
+      ideaRequested: false,   // 橘鏡是否已写信求助（问白班这层楼的规则）
+      ideaReceived: false,    // 白班（氷川律）是否已回信给出规则提醒
+      reportSent: false,      // 橘鏡是否已通过规则选择并报平安（触发结局）
       endingSeen: false,
-      sawPhoto: false,          // 格雷（反钟镇）是否已看过井边的怪照片
+      coffeeRule: null,       // 规则1：茶水间（true=遵守，false=违反，null=未选）
+      printerRule: null,      // 规则2：打印机
+      elevatorRule: null,     // 规则3：电梯
     },
-    codes: [],        // 已收集的「钟码」数字碎片（0-9，去重），跨两端共享
-    sentMails: [],   // 两个世界之间来回的信 {fromTl,toTl,subject,body,time,isEnding,read}
-    filesRead: {},   // 已读物件 key: `${tl}:${name}`
+    sentMails: [],   // 白班/夜班之间来回的记录 {fromTl,toTl,subject,body,time,isRuleReply,read}
+    filesRead: {},   // 已读线索 key: `${tl}:${name}`
   };
 }
 
@@ -522,7 +487,6 @@ function loadState(){
       const merged = defaultState();
       Object.assign(merged, parsed);
       merged.flags = Object.assign(defaultState().flags, parsed.flags || {});
-      merged.codes = Array.isArray(parsed.codes) ? parsed.codes : [];
       return merged;
     }
   }catch(e){}
@@ -535,28 +499,28 @@ function saveState(){
 // ---------- 引导信链（仅反钟镇 / 格雷一侧，顺序解锁） ----------
 const INTRO_MAILS = [
   {
-    id:"intro1", from:"钉在木屋门后的木牌", time:"未知钟点",
-    subject:"邮差须知（老规矩）",
-    body:"天一黑就该出门了：把田里稻草人怀里的纸条,一张张送到井边投进去,今天的差事才算办完。\n\n对了，树杈上那面镜子是镇上公用的，谁都能对着它写两句——但可别乱涂乱画，后面指不定还有谁要用它捎信。",
-    quip:"公用的镜子，公用的责任——这套说辞，怎么听着有点耳熟。", mood:"normal"
+    id:"intro1", from:"彼岸事务所 · 系统", time:"23:59",
+    subject:"夜班交接提醒",
+    body:"夜班值班系统已上线。请先查看「交接记录本」，上一班（白班）留给你的记录都在里面。\n\n今晚预警：电梯面板出现异常楼层「B7」，请勿乘坐。",
+    quip:"异常楼层？行，又是我值夜班的这天。", mood:"normal"
   },
   {
-    id:"intro2", from:"时间树的树洞", time:"下午六点",
-    subject:"今天的心愿已经收好了",
-    body:"稻草人们今天的纸条,都已经归档存好，如需查看,去「物件」那边翻一翻就是。\n（本消息由树洞自动'沙沙'作响发出，无需回应。）",
-    quip:"一棵树都比我认真，自动生成报告，连加班费都不要。", mood:"normal"
+    id:"intro2", from:"交接记录本", time:"00:05",
+    subject:"白班的记录（一）",
+    body:"白班今天归档了三份怪谈委托，都处理完了。\n\n需要查看的话，去「物件」那边翻一翻就是。\n（本记录由公司内网自动生成，无需回应。）",
+    quip:"白班连归档都做得比我有条理，羡慕。", mood:"normal"
   },
   {
-    id:"intro3", from:"落款模糊的字条", time:"六点整（大概）",
-    subject:"如果有人看到这句话",
-    body:"我不知道这句话，会不会有人看见。\n\n如果看见了——说明这面镜子还醒着，说明还有人，愿意对着它写点什么。\n那就好。至少不是只有我一个人，对着一块会反光的木板自言自语。",
-    quip:"陌生留言，换我在阁楼收到，多半以为是恶作剧——不过这语气，倒挺真诚的。", mood:"creepy"
+    id:"intro3", from:"落款模糊的记录", time:"00:12",
+    subject:"如果有人看到这一页",
+    body:"我不知道这一页，会不会有人翻到。\n\n如果翻到了——说明这层楼还醒着，说明还有人，愿意在交接本上写点什么。\n那就好。至少不是只有我一个人，对着这本没人看的本子写写画画。",
+    quip:"这语气，像是上一班谁临走前写的。", mood:"creepy"
   },
   {
-    id:"intro4", from:"格雷", time:"六点整（还是大概）",
-    subject:"想了很久，还是决定写下来",
-    body:"我好像，把一些很重要的事情，倒着忘掉了——连自己是从哪一天开始，困在这永远的六点里，都想不真切。\n\n可镜子里，好像已经浮出来一句回话——问题是，我还没写出对应的那句问句。\n\n算了，管它顺序对不对，我想把眼下能想到的事，好好写一写，当封信投进这面镜子里，试试看，能不能真的送到镜子外头去。\n\n……下面应该会出现【写一段话】的入口了，去试试吧。",
-    quip:"糊里糊涂先斩后奏——这操作，我熟，毕竟我交周报也是这个流程。", mood:"creepy"
+    id:"intro4", from:"氷川律", time:"00:18",
+    subject:"写给夜班的人",
+    body:"我好像，把一些很重要的事，忘掉了——连自己是从哪一天开始，被困在这白班的循环里，都想不真切。\n\n但交接本上，好像已经浮出来一句回话——问题是，我还没写出对应的那句问句。\n\n算了，管它顺序对不对。我把眼下能想到的事，都写进这本交接本里，投给夜班，试试看能不能真的送到你手上。\n\n……下面应该会出现【写一段话】的入口了，去试试吧。",
+    quip:"上一班的人先斩后奏，这操作我熟，我交周报也是这个流程。", mood:"creepy"
   },
 ];
 
@@ -568,111 +532,60 @@ function allIntroRead(){
   return INTRO_MAILS.every(m => state.introRead.includes(m.id));
 }
 
-// ---------- 物件（按世界区分，部分受 flags 控制显隐/锁定） ----------
+// ---------- 线索（按世界区分：夜班=现在，白班=过去） ----------
 function getFiles(tl){
   if(tl === "A"){
     return [
       {
-        name: "阁楼手记.txt", locked:false,
-        quip:"写日记这个习惯，看来我从小就有——不过内容一天比一天离谱。", mood:"normal",
-        content: "写在我自己本子上的：\n下雨的星期天,我在阁楼里翻出一面会认字的镜子——不是比喻,是真的会认字。\n镜子那头,好像住着一个后脑勺插着乌鸦羽毛的男孩,还有一整个被卡在下午六点的小镇。\n这事儿要是说给大人听,多半会被送去看医生。所以,先记在这儿,谁都别看。"
+        name: "白班手记.txt", locked:false,
+        quip:"上一班的人临走前写的，字迹到最后有点抖。", mood:"creepy",
+        content: "白班工位上摊开的一本手记，字迹工整。\n\n「今天轮到白班收尾。电梯多停了一层，我上去看了看，什么都没看见。\n可能是看错了。」\n\n（最后一行越写越轻，像写的人当时手在抖。）"
       },
       {
-        name: "旧怀表的说明卡.txt", locked:false,
-        codes: [1, 8],
-        quip:"停在六点的表，配上'欠着一杯茶'——这镜子那头的镇子，多半也卡在同一个点上。", mood:"creepy",
-        content: "系在一只停摆怀表链子上的泛黄纸卡：\n『这只表,我说什么也不肯走了。表盘停在——18:00。若有谁能让它重新走动,那这镇子里欠着的一杯茶,也该续上了。』\n落款被虫蛀掉了一半,只留得一个'六'字的偏旁。\n\n（18:00。一和八，两片钟码。）",
-        onRead(){ state.flags.gotAccessCode = true; }
+        name: "氷川律的归档记录.txt", locked:false,
+        quip:"冷静，克制，结论清楚——这人适合写周报。", mood:"normal",
+        content: "一份归档记录，落款「氷川律」。\n\n「委托编号 042：B7 层异常。\n现象：咖啡泡不满、打印机午夜自启、电梯偶停偶数层。\n结论：『规则型』怪谈，非实体型。\n建议：不要试图改变任何一条现状。规则就是规则，别碰。\n——已移交夜班跟进。」"
       },
       {
-        name: "奶奶的购物清单.txt", locked:false,
-        codes: [7],
-        quip:"奶奶买司康饼粉的执念，跟镜子那头吃不完的司康饼，是不是有点缘分。", mood:"normal",
-        content: "压在抽屉最底层的一张纸：\n司康饼粉、司康饼粉、司康饼粉、司康饼粉、司康饼粉、司康饼粉、司康饼粉\n黄油　少许\n果酱　随意\n（写着写着好像陷进去出不来了，最后歪歪扭扭地补了一句：算了，直接多买点吧。）\n\n（司康饼粉，写了七遍。七——又一片钟码。）"
+        name: "水無瀬藍的便签.txt", locked:false,
+        quip:"这姑娘满脑子都是吃的，不过她观察得真细。", mood:"normal",
+        content: "一张画着咖啡杯涂鸦的便签，旁边一行小字：\n\n「茶水间的咖啡，闻起来很香，但永远只有半杯。\n我好几次想倒满它，都被前辈拦住了。\n他说：渴了喝一口，够了就行，别贪。\n——蓝」"
       },
       {
-        name: "妈妈的字条.txt", locked:false,
-        codes: [3],
-        quip:"妈妈的字条总像在哄小孩——可'星期三'三个字，这会儿读着，跟暗号似的。", mood:"normal",
-        content: "贴在梳妆镜角上、被水汽洇软了的一张小字条：\n『苔丝，星期三放学后别乱跑，阁楼那台钟又该修了，妈妈晚点回来。』\n\n（星期三，一星期的第三天。三，又一片钟码。）"
-      },
-      {
-        name: "老照片.jpg", locked:false,
-        mediaType:"image",
-        mediaName:"image/old_photo_clock.jpg",
-        mediaSrc:"image/old_photo_clock.png",
-        mediaHint:"建议素材：一张泛黄的老照片，拍的是阁楼一角一台停摆的落地钟，钟面裂了一道缝，指针卡在六点和六点零一分之间；照片边角有铅笔写的小字。",
-        codes: [6, 0],
-        quip:"06:01——比六点多一分钟而已，这算盘打得，倒是挺细。", mood:"creepy",
-        content: "一张压在相册最后一页的老照片：\n拍的是这台阁楼里的旧落地钟,钟面裂了一道缝,两根指针卡在六点刚过一点点的地方,动弹不得。\n照片背面,铅笔字写着：\n\n    如果它能走完这一分钟就好了——06:01\n\n字迹很旧,力道很轻,像是写字的人,其实并不抱太大希望。\n\n（06:01。六，零——两片钟码。）",
-        onRead(){ state.flags.watchedVideo = true; }
+        name: "花咲樂的留言.txt", locked:false,
+        quip:"『小鏡』……这称呼，也就她叫得出口。", mood:"normal",
+        content: "前台压着一张留言条，落款「花咲」。\n\n「小鏡，夜班辛苦啦～今晚电梯有点怪，多停了一层。\n我已经报给系统了，你值夜班的时候别去 B7 层就行。\n回来请你吃司康饼！」"
       },
     ];
   }else{
     return [
       {
-        name: "邮差须知.txt", locked:false,
-        codes: [5],
-        quip:"合着连开门密码都写在门后，这镇子的保密意识，约等于零。", mood:"normal",
-        content: "钉在木屋门后的旧木牌：\n每天黄昏,把田里稻草人怀里的纸条,一张张送到镇子中央的井边投进去,当天的差事就算办完。\n\n（备注：井边石缝里那只锈铁盒子,不该随便撬开——真要开,盒子盖子上刻着「根数九,契数二」。大摆钟停下来那一刻,表盘上有个数,自己去找。）\n\n（木牌左下角一行蝇头小字：今天送五户。五——又一片钟码。）"
+        name: "交接记录本.txt", locked:false,
+        quip:"白班的交接写得挺轻松，越往后越不对劲。", mood:"creepy",
+        content: "工位上的交接记录本，皮革封面磨得发亮。\n翻到最后一页，是白班今天写的交接：\n\n「三份委托处理完毕，两份归档，一份转夜班跟进。\n夜班的，今晚没什么事，就是电梯偶尔会多停一层，别在意。\n——白班 花咲」\n\n纸页末尾，有一行被反复描粗的字，墨水沁进纸里：\n「别在茶水间待太久。」"
       },
       {
-        name: "涂鸦手账.txt", locked:false,
-        codes: [4],
-        quip:"字迹越写越像是自己在跟自己抢答案，倒着活也真是不容易。", mood:"creepy",
-        content: "随手写在手账边角的字迹：\n\n茶要凉了 茶要凉了 茶要凉了 茶要凉了\n\n（这句话，分明还没写，却已经写了四遍。）\n\n司康饼今天好像终于要吃完了。\n\n（『茶要凉了』，四遍。四——又一片钟码。）"
+        name: "员工手册.txt", locked:false,
+        quip:"最后三条的字体跟前面不一样，像是后来补印的。", mood:"creepy",
+        content: "「彼岸事务所 · 员工手册（内部）\n\n第一条：公司分白班与夜班，交接以交接记录本为准。\n第二条：B7 层不对外办公。\n第三条：茶水间的咖啡机属公司财产，请勿私自调试。\n第四条：打印机的维护由系统自动完成，请勿干预。\n第五条：电梯仅停靠奇数层。\n\n（最后三条的印刷字体，明显和前两条不一样，像后来重新排印的。）"
       },
       {
-        name: state.flags.decryptedReport ? "争执记录.txt" : "争执记录.enc",
-        locked: !state.flags.decryptedReport,
-        door: "井边锈铁盒",
-        codes: [9],
-        quip: state.flags.decryptedReport ? "原来我们镇子被困住，不是什么惊天动地的诅咒，就是两个爱面子的家伙谁也不肯先服软而已。" : undefined,
-        mood: state.flags.decryptedReport ? "normal" : undefined,
-        content: state.flags.decryptedReport
-          ? "[井边锈铁盒里的纸卷展开了]\n大摆钟脾气不坏,只是特别在意公平；六点先生总嫌大家吃得慢,爱提前拨快指针。\n有一天六点先生又来催,大摆钟卸下齿轮塞给他：『你自己去伺候得了！』六点先生也不服软：『好啊，那你自己待着吧，待到地老天荒！你手底下这些人,谁也别想好好地往前记事儿了！』\n两位都后悔了——可惜吵架说出去的话,跟司康饼上的糖霜一样,收不回来了。\n\n（纸卷右下角，一个孤零零的数字：9。十八点，一加八得九。九，又一片钟码。）\n\n如果镜子外头有人在看——你那边，会不会正好有什么办法，能让两个死要面子的家伙，体面地和好？"
-          : "[已上锁] 井边的锈铁盒还锁着，这卷纸拿不出来。点这里，放入钟码开锁。"
+        name: "茶水间的便签.txt", locked:false,
+        quip:"『不要问我是谁写的』……行，我不问。", mood:"creepy",
+        content: "贴在茶水间咖啡机旁的一张黄便签：\n\n「咖啡永远泡不满，别试。\n上一个试图把它倒满的人，现在还在那儿泡咖啡。\n——不要问我是谁写的。」"
       },
       {
-        name: state.flags.decryptedDiary ? "格雷日记.txt" : "格雷日记.enc",
-        locked: !state.flags.decryptedDiary,
-        door: "格雷日记木箱",
-        codes: [7],
-        quip: state.flags.decryptedDiary ? "原来这本日记，是写给'我'自己的——只是那个'我'，恰好是镜子外头的一个陌生人。" : "又是一件锁着的东西，合着这镇子就没几样能直接看的。",
-        mood: state.flags.decryptedDiary ? "normal" : "normal",
-        content: state.flags.decryptedDiary
-          ? "[床底木箱里的本子打开了]\n我的记性越来越差，昨天还清楚的事，今天就想不起来了。\n这镇子的记忆是倒着长的——住得越久，忘得越多，到后来，连最重要的东西也会一件件丢光。\n\n我把这句话留在这儿，也不知道写给谁看：\n总有一天，会有一个『正着长记忆』的人，从镜子那头出现。到时候，请替我说声谢谢——TA大概能帮我们，把这钟拨回去一点点。\n\n（扉页上写着：六月一日，第七天。零六零一，根数是七。七，又一片钟码。）"
-          : "[已上锁] 床底的木箱还锁着，这本日记翻不开。点这里，放入钟码开锁。（提示：数字藏在镜子另一头的老照片里）"
+        name: "打印机旁的告示.txt", locked:false,
+        quip:"午夜自启的打印机，比我还会自动加班。", mood:"creepy",
+        content: "贴在打印机上的告示，纸张边缘发黄卷曲：\n\n「午夜十二点，打印机会自己响。\n它吐出来的东西，不要看，不要碰，不要捡。\n看完的人，会知道不该知道的事。」"
       },
       {
-        name: state.flags.openedTreeHole ? "时间树的年轮.txt" : "时间树的年轮.enc",
-        locked: !state.flags.openedTreeHole,
-        door: "时间树树洞",
-        quip: state.flags.openedTreeHole ? "原来这整棵树，都是倒着长的——怪不得这镇子的记忆也倒着走。" : "树洞里的东西，得先把洞口那层薄冰化开才拿得到。",
-        mood: state.flags.openedTreeHole ? "creepy" : "normal",
-        content: state.flags.openedTreeHole
-          ? "[树洞里的树皮卷展开了]\n这卷树皮上,一圈一圈的年轮,是从外往里长的——最外面那一圈,反倒是这棵树最早的一天。\n倒着长的不只是我的记性,连这棵时间树,都在往回走。\n\n所以啊,只要让钟往前走哪怕一分钟,这整座镇子,兴许就会跟着它,一起想起来该怎么正常地过下去。\n\n（树皮上刻着一行小字：往前走，别回头。）"
-          : "[已上锁] 树洞口结着一层会反光的薄冰。点这里，放入钟码把它化开。"
-      },
-      {
-        name: state.flags.clockTicked ? "钟楼的钟.txt" : "钟楼齿轮闸.enc",
-        locked: !state.flags.clockTicked,
-        door: "钟楼齿轮闸",
-        quip: state.flags.clockTicked ? "钟走起来了。这镇子，终于又能正常地往前记事了。" : "钟楼底下的齿轮闸，卡得死死的。",
-        mood: state.flags.clockTicked ? "normal" : "creepy",
-        content: state.flags.clockTicked
-          ? "[齿轮闸转开了]\n钟楼里的大摆钟重重颤了一下，卡了不知多久的指针，往前挪了一分钟，停在六点零一分。\n从这一刻起，这镇子的时间，终于又开始往前走了。"
-          : "[已上锁] 钟楼底部的齿轮闸还死死卡着。点这里，放进钟码，把钟往前拨一分钟。"
-      },
-      {
-        name: "井边的怪照片.jpg", locked: !state.flags.decryptedDiary,
+        name: "电梯面板.jpg", locked:false,
         mediaType:"image",
-        mediaName:"image/well_reflection.jpg",
-        mediaSrc:"image/well_reflection.png",
-        mediaHint:"建议素材：镇子中央那口井的照片，水面倒映着黄昏天色与老槐树；仔细看，水纹里似乎多映出一道不属于反钟镇的轮廓——短发，拿着一支铅笔。",
-        quip:"井里那道多出来的轮廓，该不会就是镜子外头，正在看这段话的人吧。", mood:"creepy",
-        content: "蹲在井边,顺手往水里瞧了一眼。\n井水映着老槐树,映着挂在树上的镜子,映着我自己的影子——\n可影子旁边,好像还多出来一道轮廓,梳着我从没见过的发型,手里好像捏着一支铅笔。\n\n（也可能只是水面晃了一下,我看花了眼。）",
-        onRead(){ state.flags.sawPhoto = true; }
+        mediaName:"image/elevator_panel.jpg",
+        mediaHint:"建议素材：B7 层电梯按钮面板的特写，奇数层按钮亮着，偶数层按钮全灭，角落里有一道指甲划痕。",
+        quip:"奇数层亮着，偶数层全灭，这电梯比我还会挑活。", mood:"creepy",
+        content: "B7 层的电梯，按钮面板上只有奇数层亮着。\n偶数层的按钮，被什么东西从里面按灭了。\n\n（角落里，有人用指甲在面板上划了几个字：\n「别按偶数层。」）"
       },
     ];
   }
@@ -684,14 +597,14 @@ const $$ = (sel) => document.querySelectorAll(sel);
 const mainEl = $("#main");
 
 function charName(tl){
-  return tl === "A" ? "苔丝" : "格雷";
+  return tl === "A" ? "白班" : "橘鏡";
 }
 
 function applyTheme(){
   document.body.className = state.timeline === "A" ? "theme-a" : "theme-b";
   $("#title-sub").textContent = state.timeline === "A"
-    ? "MIRROR_LINK // " + DATE_A_FULL
-    : "MIRROR_LINK // " + DATE_B_FULL;
+    ? "彼岸事务所 // " + DATE_A_FULL
+    : "彼岸事务所 // " + DATE_B_FULL;
   renderTopControl();
 }
 
@@ -718,7 +631,7 @@ function toggleTimeline(){
   renderGoal();
 }
 
-let currentApp = "calc";
+let currentApp = "rule";
 
 function switchApp(app){
   currentApp = app;
@@ -727,7 +640,7 @@ function switchApp(app){
 }
 
 function renderApp(app){
-  if(app === "calc") return renderCalcPanel();
+  if(app === "rule") return renderRulePanel();
   if(app === "files") return renderFiles();
   if(app === "mail") return renderMail();
   if(app === "system") return renderSystem();
@@ -739,34 +652,27 @@ function renderFiles(fileToOpen){
   if(fileToOpen){
     const f = files.find(x => x.name === fileToOpen);
     if(f && !f.locked){
-      const newCodes = markFileRead(f);
+      markFileRead(f);
       mainEl.innerHTML = `
-        <div class="panel-title">物件 // ${state.timeline === "A" ? DATE_A_SHORT : DATE_B_SHORT}</div>
+        <div class="panel-title">线索 // ${state.timeline === "A" ? DATE_A_SHORT : DATE_B_SHORT}</div>
         <span class="back-link" onclick="renderFiles()">&laquo; 返回物件列表</span>
         ${renderMediaBox(f)}
         <div class="doc-view">${escapeHtml(f.content)}</div>
       `;
       showQuip(f.quip || randomQuip("file"), f.mood || "normal");
-      if(newCodes.length){
-        const named = newCodes.map(n => CODE_NAMES[n] + "·" + n).join("、");
-        setTimeout(() => showQuip(`拾起了一片钟码：${named}，落进了钟码口袋。`, "normal"), 2600);
-      }
       return;
     }
   }
   mainEl.innerHTML = `
-    <div class="panel-title">物件 // ${state.timeline === "A" ? DATE_A_SHORT : DATE_B_SHORT}</div>
-    ${files.map(f => {
-      const click = f.locked ? (f.door ? `openDoorUI('${f.door}')` : "quipLockedFile()") : `renderFiles('${f.name}')`;
-      return `
-        <div class="file-row ${f.locked?"locked":""}" onclick="${click}">
-          <span class="icon">${f.locked ? "🔒" : (f.mediaType === "video" ? "🎞" : f.mediaType === "image" ? "🖼" : "📄")}</span>
-          <span class="name">${f.name}</span>
-          ${f.locked ? '<span class="tag">上锁</span>' : (f.mediaType ? `<span class="tag">${f.mediaType==="video"?"影像":"照片"}</span>` : "")}
-        </div>
-      `;
-    }).join("")}
-    <div class="hint">提示：点开物件读文字，钟码会落进「钟码算盘」的口袋；点锁住的物件，放入钟码就能开锁。</div>
+    <div class="panel-title">线索 // ${state.timeline === "A" ? DATE_A_SHORT : DATE_B_SHORT}</div>
+    ${files.map(f => `
+      <div class="file-row ${f.locked?"locked":""}" onclick="renderFiles('${f.name}')">
+        <span class="icon">${f.locked ? "🔒" : (f.mediaType === "video" ? "🎞" : f.mediaType === "image" ? "🖼" : "📄")}</span>
+        <span class="name">${f.name}</span>
+        ${f.locked ? '<span class="tag">上锁</span>' : (f.mediaType ? `<span class="tag">${f.mediaType==="video"?"影像":"照片"}</span>` : "")}
+      </div>
+    `).join("")}
+    <div class="hint">提示：翻看「物件」里的线索，B7 层的规则会逐渐清晰。想确认规则，看左侧「规则」面板。</div>
   `;
 }
 
@@ -790,22 +696,12 @@ function renderMediaBox(f){
 
 function markFileRead(f){
   const key = `${state.timeline}:${f.name}`;
-  const newCodes = [];
   if(!state.filesRead[key]){
     state.filesRead[key] = true;
     if(typeof f.onRead === "function") f.onRead();
-    if(Array.isArray(f.codes)){
-      f.codes.forEach(c => {
-        if(!state.codes.includes(c)){
-          state.codes.push(c);
-          newCodes.push(c);
-        }
-      });
-    }
     saveState();
-    if(newCodes.length) renderGoal();
+    renderGoal();
   }
-  return newCodes;
 }
 
 function escapeHtml(str){
@@ -858,46 +754,37 @@ function buildMailList(tl){
     });
   }else{
     list.push({
-      kind:"sys", id:"sys-welcome", from:"镜子的雾气", time:"今天 上午",
-      subject:"阁楼有点不对劲",
-      body:"你最近是不是总盯着那面旧镜子看？镜面偶尔泛起的雾气，好像不是普通的灰尘。\n如果发现什么奇怪的字迹，别急着擦掉。（本提醒自动出现，无法回复。）",
+      kind:"sys", id:"sys-welcome", from:"彼岸事务所 · 白班系统", time:"白天",
+      subject:"白班值班提醒",
+      body:"白班值班系统已上线。今日怪谈委托已清空，交接记录已归档。\n（本提醒自动出现，无法回复。）",
       locked:false, read: state.filesRead["A:__sys-welcome"] === true,
-      quip:"这算哪门子的智能家居提醒，比我家扫地机器人还有灵性。", mood:"creepy",
+      quip:"白班的系统，比夜班的还客气。", mood:"normal",
     });
-    if(state.flags.watchedVideo){
-      list.push({
-        kind:"sys2", id:"sys-warning", from:"镜子里飘来的字条", time:"今天 稍晚",
-        subject:"你不该翻到那张照片的",
-        body:"那张照片本来压在相册最底下——不过既然翻到了，那就……祝你好运？\n有些数字，看见了就很难装作没看见。",
-        locked:false, read: state.filesRead["A:__sys-warning"] === true,
-        quip:"被一面镜子将了一军，这售后服务态度真是一言难尽。", mood:"creepy",
-      });
-    }
     if(state.flags.ideaRequested && !state.flags.ideaReceived){
       list.push({
-        kind:"sys3", id:"sys-needidea", from:"镜子雾气里的新字迹", time:"今天 下午",
-        subject:"镜子那头的人在求助",
-        body:"雾气又散开一道缝，这次字迹比以前急迫：\n\n「我搞清楚了。大摆钟和六点先生赌气吵了一架，谁也不肯先服软，才把整个反钟镇卡在下午六点。如果你那边有什么点子，能让两个死要面子的家伙体面地和好——请一定告诉我。」\n\n（那个后脑勺插着乌鸦羽毛的男孩，第一次听起来有点着急。）\n\n→ 去「书信」里写一段话，把点子送过去。",
+        kind:"sys3", id:"sys-needidea", from:"交接记录本", time:"白班",
+        subject:"夜班的人发来了求助",
+        body:"交接记录本上多了一页，是夜班的人写的：\n\n「这层楼的规矩，我好像摸到了。我该怎么活着离开 B7 层？」\n\n（那个值夜班的家伙，第一次听起来有点慌。）\n\n→ 去「交接记录」里回一页，告诉他规矩。",
         locked:false, read: state.filesRead["A:__sys-needidea"] === true,
-        quip:"一个被困在下午茶时间里的人发来了求助，这个剧情发展，比作业截止通知还令人振奋。", mood:"normal",
+        quip:"夜班那家伙慌成这样，看来 B7 层不是闹着玩的。", mood:"normal",
       });
     }
     if(state.flags.ideaReceived && !state.flags.reportSent){
       list.push({
-        kind:"sys4", id:"sys-waiting", from:"镜子里漫出来的茶香", time:"今天 傍晚",
-        subject:"镜子那头，大概正在忙",
-        body:"雾气今天有点不一样——不像是有字要浮出来，倒像是有什么正在发生、等着变成结果的那种沉默。\n\n格雷收到你的邀请函点子了。就看他怎么送出去了。",
+        kind:"sys4", id:"sys-waiting", from:"交接记录本", time:"白班",
+        subject:"等他做选择",
+        body:"规矩已经写给他了。\n现在，就看他守不守得住。\n\n守得住，明早白班就能见到他；守不住，这层楼就多一个夜班。",
         locked:false, read: state.filesRead["A:__sys-waiting"] === true,
-        quip:"静候佳音这件事，说起来轻松，实际上我已经刷了三次书信箱了。", mood:"normal",
+        quip:"静候佳音。不过这种时候，通常等来的都不是什么好音。", mood:"normal",
       });
     }
   }
   state.sentMails
     .filter(m => m.toTl === tl)
     .forEach(m => list.push({
-      kind:"received", id:m.id, from: m.fromTl === "A" ? ("来自" + DATE_A_SHORT + "的信") : ("来自" + DATE_B_SHORT + "的信"),
-      time:m.time, subject:m.subject, body:m.body, locked:false, read:m.read, isEnding:m.isEnding,
-      quip: m.isEnding ? "信到了。深呼吸一下，再点开看看写了什么。" : undefined,
+      kind:"received", id:m.id, from: m.fromTl === "A" ? ("来自" + DATE_A_SHORT + "的交接") : ("来自" + DATE_B_SHORT + "的交接"),
+      time:m.time, subject:m.subject, body:m.body, locked:false, read:m.read, isRuleReply:m.isRuleReply,
+      quip: m.isRuleReply ? "规矩来了。读完它，就轮到你自己做选择了。" : undefined,
     }));
   return list;
 }
@@ -910,7 +797,7 @@ function renderMail(openId){
     if(m && !m.locked){
       markMailRead(m);
       mainEl.innerHTML = `
-        <div class="panel-title">书信 // ${state.timeline === "A" ? DATE_A_SHORT : DATE_B_SHORT}</div>
+        <div class="panel-title">交接记录 // ${state.timeline === "A" ? DATE_A_SHORT : DATE_B_SHORT}</div>
         <span class="back-link" onclick="renderMail()">&laquo; 返回信箱</span>
         <div class="mail-detail">
           <div class="subject">${escapeHtml(m.subject)}</div>
@@ -919,14 +806,14 @@ function renderMail(openId){
         </div>
       `;
       showQuip(m.quip || randomQuip("mail"), m.mood || "normal");
-      if(m.isEnding) setTimeout(triggerEnding, 900);
+      if(m.isRuleReply && !state.flags.reportSent) setTimeout(startRuleChoice, 700);
       renderNavDots();
       return;
     }
   }
 
   mainEl.innerHTML = `
-    <div class="panel-title">书信 // ${state.timeline === "A" ? DATE_A_SHORT : DATE_B_SHORT}</div>
+    <div class="panel-title">交接记录 // ${state.timeline === "A" ? DATE_A_SHORT : DATE_B_SHORT}</div>
     ${list.map(m => `
       <div class="mail-row ${m.locked?"locked":""}" onclick="${m.locked?"quipLockedMail()":`renderMail('${m.id}')`}">
         <span class="unread-dot ${m.read?"hidden":""}"></span>
@@ -946,52 +833,42 @@ function renderMail(openId){
 
 function renderComposeSection(){
   if(!state.sendUnlocked){
-    return `<div class="hint">把信按顺序读完，也许会有新的东西解锁……</div>`;
+    return `<div class="hint">把交接记录按顺序读完，也许会有新的东西解锁……</div>`;
   }
   if(!composeOpen){
     return `
       <div class="compose-toggle-wrap">
-        <button class="action-btn" onclick="openCompose()">🕯 在镜子上写一段话</button>
+        <button class="action-btn" onclick="openCompose()">🖋 写一页交接记录</button>
       </div>
     `;
   }
   const draft = defaultDraft();
   return `
     <div class="compose-box">
-      <div class="compose-label">这段话会被送到：${state.timeline === "B" ? DATE_A_SHORT : DATE_B_SHORT}</div>
+      <div class="compose-label">这一页会交到：${state.timeline === "B" ? DATE_A_SHORT : DATE_B_SHORT}</div>
       <textarea id="compose-text">${escapeHtml(draft)}</textarea>
       <div class="compose-actions">
         <button class="action-btn ghost" onclick="closeCompose()">取消</button>
-        <button class="action-btn" onclick="sendComposedMail()">投进镜子</button>
+        <button class="action-btn" onclick="sendComposedMail()">写进交接本</button>
       </div>
     </div>
   `;
 }
 
 function defaultDraft(){
-  // 第一步：格雷解开争执记录后，写信求点子
-  if(state.timeline === "B" && state.flags.decryptedReport && !state.flags.ideaRequested){
-    let base = "我搞清楚了。反钟镇的钟停在六点，是因为大摆钟和六点先生赌气吵了一架，谁也不肯先服软。\n如果你那边有什么点子，能让两个死要面子的家伙体面地和好——请一定告诉我。";
-    if(state.flags.decryptedDiary){
-      base += "\n\n我还翻到自己的一本日记，写日记的“我”说，总有一天会等到一个记性和我们不一样的人。我猜，那大概就是你。";
-    }
-    return base;
+  // 第一步：橘鏡读懂了规则，写信求白班确认
+  if(state.timeline === "B" && allRulesRevealed() && !state.flags.ideaRequested){
+    return "我摸到一点门道了。这层楼有三条规矩——茶水间的咖啡泡不满，打印机午夜会响，电梯只认奇数层。\n\n白班的，我说的对吗？我该怎么活着离开 B7 层？";
   }
-  // 第二步：苔丝收到求助信后，回信支招（续杯邀请函的主意）
+  // 第二步：白班（氷川律）回信给规则提醒
   if(state.timeline === "A" && state.flags.ideaRequested && !state.flags.ideaReceived){
-    return "我琢磨了好久——要让两个谁都不肯先服软的人和好，那就得给他俩都准备一个“不算认输”的借口。\n我写了一封看着一本正经、内容其实相当胡闹的邀请函，邀请大摆钟和六点先生去参加“迟到了不知道多少年的续杯茶会”——不是道歉，是续杯，听着就体面多了。\n你把这个交给他俩试试？这招叫“逆向工程”，我跟数学老师偷师来的，专治各种死要面子。";
+    return "你猜得差不多，就三条：\n一、茶水间的咖啡永远只有半杯，别倒满；\n二、午夜打印机吐的纸，别碰；\n三、电梯只去奇数层，别按偶数层。\n\n守得住，就下得来。守不住，这层楼会把你留下。\n——律";
   }
-  // 第三步：格雷把邀请函送出去，试过之后回信报喜（触发真正的结局）
-  if(state.timeline === "B" && state.flags.ideaReceived && !state.flags.reportSent){
-    if(!state.flags.clockTicked){
-      return "苔丝的点子到了——「续杯茶会」，不是道歉，是续杯，这个冠冕堂皇的借口，太妙了。\n\n可我捧着邀请函走到钟楼前才想起来：大摆钟还卡在六点呢，齿轮闸不打开，这茶会也开不起来。\n\n（先去钟楼看看那道齿轮闸吧——它刻着「根数九，契数四」。得先把钟往前拨一分钟。）";
-    }
-    return "成了！我把你的邀请函念给大摆钟和六点先生听，他们谁也没提“和好”两个字，谁也没说“对不起”，就这么揣着“续杯”这个冠冕堂皇的借口，重新坐下喝茶了。\n钟走到六点零一分了！司康饼也终于能吃完了！我现在正“正着”经历这一切，这种感觉太奇怪了——原来“正常地往前走”，是这个滋味啊。\n谢谢你的主意。虽然我很确定，这封邀请函荒唐得不像话——可它偏偏就成了。";
-  }
+  // 还没读懂规则前，第一次写
   if(state.timeline === "B" && !state.crossUnlocked){
-    return "如果这面镜子真能把话送到镜子外头——那我想说，我好像被困在一场总也走不完的下午六点里了。你那边，一切都还正常吗？";
+    return "值班第一天就撞上这种地方。白班的，B7 层到底是什么？有人吗？";
   }
-  return "谢谢你的点子，这边一切都顺利，我会把后续也讲给你听的。";
+  return "规矩我大概懂了。等我把这层楼看明白，就回你。";
 }
 
 function openCompose(){ composeOpen = true; renderMail(); }
@@ -1003,23 +880,16 @@ function sendComposedMail(){
   if(!text) return;
 
   const fromTl = state.timeline;
-  // 想报喜但钟还没走起来：先拦一下，提示去开齿轮闸
-  if(fromTl === "B" && state.flags.ideaReceived && !state.flags.reportSent && !state.flags.clockTicked){
-    showQuip("先别急着投——钟楼的齿轮闸还卡着，钟没走起来，这喜还报不成。去「物件」点开钟楼齿轮闸的锁，放进钟码，把钟往前拨一分钟。", "fail");
-    return;
-  }
   const toTl = fromTl === "A" ? "B" : "A";
   const firstTime = !state.crossUnlocked;
 
-  // 三步书信链，对应完整剧情：① 格雷求点子 → ② 苔丝支招（续杯邀请函）→ ③ 格雷报喜（结局）
-  const isAskIdeaMail = fromTl === "B" && state.flags.decryptedReport && !state.flags.ideaRequested;
-  const isIdeaReplyMail = fromTl === "A" && state.flags.ideaRequested && !state.flags.ideaReceived;
-  const isFinalReportMail = fromTl === "B" && state.flags.ideaReceived && !state.flags.reportSent && state.flags.clockTicked;
+  // 通信链：① 橘鏡求规矩 → ② 白班回规矩（读这页触发规则选择）
+  const isAskRuleMail = fromTl === "B" && allRulesRevealed() && !state.flags.ideaRequested;
+  const isRuleReplyMail = fromTl === "A" && state.flags.ideaRequested && !state.flags.ideaReceived;
 
-  let subject = firstTime ? "第一次投进镜子里的话" : "捎来的话";
-  if(isAskIdeaMail) subject = "关于那场争执，我都搞清楚了";
-  else if(isIdeaReplyMail) subject = "一个说不通但很好玩的主意";
-  else if(isFinalReportMail) subject = "成了！钟走起来了";
+  let subject = firstTime ? "夜班的第一页交接" : "捎去的话";
+  if(isAskRuleMail) subject = "这层楼的规矩，我好像摸到了";
+  else if(isRuleReplyMail) subject = "三条规矩，别碰";
 
   const mail = {
     id: "m" + Date.now(),
@@ -1027,14 +897,13 @@ function sendComposedMail(){
     subject,
     body: text,
     time: nowLabel(),
-    isEnding: isFinalReportMail,
+    isRuleReply: isRuleReplyMail,
     read: false,
   };
   state.sentMails.unshift(mail);
 
-  if(isAskIdeaMail) state.flags.ideaRequested = true;
-  if(isIdeaReplyMail) state.flags.ideaReceived = true;
-  if(isFinalReportMail) state.flags.reportSent = true;
+  if(isAskRuleMail) state.flags.ideaRequested = true;
+  if(isRuleReplyMail) state.flags.ideaReceived = true;
   if(!state.crossUnlocked) state.crossUnlocked = true;
 
   composeOpen = false;
@@ -1067,229 +936,111 @@ function nowLabel(){
   return (state.timeline === "A" ? DATE_A_SHORT + " " : DATE_B_SHORT + " ") + d.toLocaleTimeString("zh-CN",{hour12:false});
 }
 
-// ---- 镜面状态面板 ----
+// ---- 值班状态面板 ----
 function renderSystem(){
   const f = state.flags;
-  const doorRows = Object.keys(DOORS).map(name => {
-    const d = DOORS[name];
-    return `<div class="flag-row"><span>门 · ${name}（根数${d.root}·契数${d.count}）</span><span class="flag-val ${f[d.doneFlag]?"on":"off"}">${f[d.doneFlag]?"已开":"未开"}</span></div>`;
+  const ruleRows = RULES.map(r => {
+    const revealed = ruleRevealed(r);
+    const done = f[r.id + "Rule"] === true;
+    return `<div class="flag-row"><span>${r.icon} ${r.title} 的规矩</span><span class="flag-val ${revealed?"on":"off"}">${revealed ? (done ? "已守" : "已懂") : "未知"}</span></div>`;
   }).join("");
-  const codeStr = state.codes.length ? state.codes.slice().sort((a,b)=>a-b).join("、") : "（空）";
   mainEl.innerHTML = `
-    <div class="panel-title">镜面状态</div>
-    <div class="flag-row"><span>已收集钟码（${state.codes.length} 个）</span><span class="flag-val on">${codeStr}</span></div>
-    <div style="margin:8px 0 4px;font-size:11px;opacity:.5;letter-spacing:1px;">— 四扇门 —</div>
-    ${doorRows}
-    <div style="margin:8px 0 4px;font-size:11px;opacity:.5;letter-spacing:1px;">— 收集进度 —</div>
-    <div class="flag-row"><span>苔丝看过旧怀表说明卡</span><span class="flag-val ${f.gotAccessCode?"on":"off"}">${f.gotAccessCode?"YES":"NO"}</span></div>
-    <div class="flag-row"><span>苔丝看过老照片</span><span class="flag-val ${f.watchedVideo?"on":"off"}">${f.watchedVideo?"YES":"NO"}</span></div>
-    <div class="flag-row"><span>格雷看过井边的怪照片</span><span class="flag-val ${f.sawPhoto?"on":"off"}">${f.sawPhoto?"YES":"NO"}</span></div>
-    <div style="margin:8px 0 4px;font-size:11px;opacity:.5;letter-spacing:1px;">— 三封信 —</div>
-    <div class="flag-row"><span>第一封：格雷写信求点子</span><span class="flag-val ${f.ideaRequested?"on":"off"}">${f.ideaRequested?"已发出":"未发出"}</span></div>
-    <div class="flag-row"><span>第二封：苔丝支招（续杯邀请函）</span><span class="flag-val ${f.ideaReceived?"on":"off"}">${f.ideaReceived?"已发出":"未发出"}</span></div>
-    <div class="flag-row"><span>第三封：格雷报喜（触发结局）</span><span class="flag-val ${f.reportSent?"on":"off"}">${f.reportSent?"已发出":"未发出"}</span></div>
-    <div class="flag-row"><span>镜子两端已连通</span><span class="flag-val ${state.crossUnlocked?"on":"off"}">${state.crossUnlocked?"YES":"NO"}</span></div>
-    <div class="flag-row"><span>【写一段话】入口已解锁</span><span class="flag-val ${state.sendUnlocked?"on":"off"}">${state.sendUnlocked?"YES":"NO"}</span></div>
-    <div class="hint">流程：读两端物件收集钟码 → 点「物件」里的锁、放进钟码开四扇门（数字根 = 根数、个数 = 契数）→ 开井边锈铁盒得争执记录 → 写信求点子 → 苔丝支招 → 开钟楼齿轮闸让钟走起来 → 写信报喜（结局）。</div>
+    <div class="panel-title">值班状态</div>
+    <div style="margin:8px 0 4px;font-size:11px;opacity:.5;letter-spacing:1px;">— B7 层规则 —</div>
+    ${ruleRows}
+    <div style="margin:8px 0 4px;font-size:11px;opacity:.5;letter-spacing:1px;">— 交接进度 —</div>
+    <div class="flag-row"><span>第一页：橘鏡问规矩</span><span class="flag-val ${f.ideaRequested?"on":"off"}">${f.ideaRequested?"已写":"未写"}</span></div>
+    <div class="flag-row"><span>第二页：白班回规矩</span><span class="flag-val ${f.ideaReceived?"on":"off"}">${f.ideaReceived?"已写":"未写"}</span></div>
+    <div class="flag-row"><span>规则选择</span><span class="flag-val ${f.reportSent?"on":"off"}">${f.reportSent?"已做":"未做"}</span></div>
+    <div class="flag-row"><span>白班/夜班已连通</span><span class="flag-val ${state.crossUnlocked?"on":"off"}">${state.crossUnlocked?"YES":"NO"}</span></div>
+    <div class="flag-row"><span>【写交接记录】入口已解锁</span><span class="flag-val ${state.sendUnlocked?"on":"off"}">${state.sendUnlocked?"YES":"NO"}</span></div>
+    <div class="hint">流程：翻「物件」读懂三条规矩 → 写交接记录问白班 → 白班回规矩 → 做规则选择（守住三条规矩就能下夜班）→ 结局。</div>
     <div style="margin-top:24px;">
       <button class="action-btn" onclick="if(confirm('确定要重置全部进度吗？')){localStorage.removeItem('${STORAGE_KEY}');location.reload();}">重置存档</button>
     </div>
   `;
 }
 
-// ---------- 钟码命名：数字碎片各有来历 ----------
-const CODE_NAMES = {
-  0: "零点", 1: "时针", 2: "双响", 3: "三刻", 4: "四季",
-  5: "五响", 6: "六点", 7: "七日", 8: "分针", 9: "归九",
-};
+// ---------- B7 层规则（怪谈规则推理） ----------
+const RULES = [
+  { id:"coffee", icon:"☕", title:"茶水间", hint:"咖啡机附近，好像藏着什么规矩。", text:"咖啡永远泡不满。不要试图倒满它。", reveal:["B:茶水间的便签.txt", "A:水無瀬藍的便签.txt"] },
+  { id:"printer", icon:"🖨", title:"打印机", hint:"打印机旁，贴着一张泛黄的告示。", text:"午夜十二点，打印机会自己响。它吐出来的东西，不要看。", reveal:["B:打印机旁的告示.txt", "A:氷川律的归档记录.txt"] },
+  { id:"elevator", icon:"🛗", title:"电梯", hint:"电梯按钮面板，好像不太对劲。", text:"电梯只能去奇数层。别按偶数层。", reveal:["B:电梯面板.jpg", "A:员工手册.txt"] },
+];
 
-// ---------- 数字根：全游戏唯一的解谜规则 ----------
-// 把一串数字加总，若结果超过一位数，就把各位再加，直到只剩一位。
-function digitalRoot(nums){
-  let sum = nums.reduce((a,b) => a + b, 0);
-  while(sum > 9){
-    sum = String(sum).split("").reduce((a,b) => a + Number(b), 0);
-  }
-  return sum;
+function ruleRevealed(rule){
+  return rule.reveal.some(key => state.filesRead[key]);
+}
+function allRulesRevealed(){
+  return RULES.every(ruleRevealed);
 }
 
-// ---------- 门配置表（只存在于反钟镇一侧） ----------
-// 每扇门刻着【根数 root】+【契数 count】：用恰好 count 个、且都已收集的钟码，
-// 凑出「数字根 = root」，门就开。解法不唯一。
-const DOORS = {
-  "井边锈铁盒": {
-    root: 9, count: 2,
-    desc: "井边石缝里的一只锈铁盒。盖子上刻着：「根数九，契数二。」旁边歪歪扭扭补了句：大摆钟停下来那一刻，表盘上有个数。",
-    doneFlag: "decryptedReport",
-    successMsg: "铁盒「咔哒」弹开了。里面卷着一份争执记录。物件已解锁：争执记录.txt",
-  },
-  "格雷日记木箱": {
-    root: 7, count: 2,
-    desc: "床底一只上了锁的木箱。锁盘上刻着：「根数七，契数二。」箱角有行铅笔字：数字藏在一张老照片的背面。",
-    doneFlag: "decryptedDiary",
-    successMsg: "木箱打开了。里面躺着一本日记。物件已解锁：格雷日记.txt",
-  },
-  "时间树树洞": {
-    root: 6, count: 3,
-    desc: "时间树的树干上有一处树洞，洞口结着一层会反光的薄冰。冰面上刻着：「根数六，契数三。」",
-    doneFlag: "openedTreeHole",
-    successMsg: "薄冰「嘶」地化开了。树洞深处藏着一卷树皮。物件已解锁：时间树的年轮.txt",
-  },
-  "钟楼齿轮闸": {
-    root: 9, count: 4,
-    desc: "钟楼底部一道咬死的齿轮闸。闸门上刻着：「根数九，契数四。」旁边一行褪色小字：钟要往前走，得先把这一分钟补上。",
-    doneFlag: "clockTicked",
-    successMsg: "齿轮闸「咯吱咯吱」转了起来——钟楼里的大摆钟重重颤了一下，卡了不知多久的指针，往前挪了一分钟，停在了六点零一分。",
-  },
-};
-
-// 校验一组钟码能否开这扇门：返回 {ok, msg}
-function checkDoor(name, digits){
-  const door = DOORS[name];
-  if(!door) return { ok:false, msg:"没有这扇门。" };
-  if(state.flags[door.doneFlag]) return { ok:false, msg:"这扇门已经开过了。" };
-  const nums = digits.map(d => Number(d));
-  if(nums.length !== door.count){
-    return { ok:false, msg:`这扇门刻着「契数 ${door.count}」，要恰好 ${door.count} 个钟码。` };
-  }
-  const root = digitalRoot(nums);
-  if(root !== door.root){
-    return { ok:false, msg:`数字根是 ${root}，可这扇门要「根数 ${door.root}」。换个组合试试。` };
-  }
-  return { ok:true, msg:door.successMsg };
-}
-
-// ---- 钟码算盘面板（数字根计算器 + 钟码口袋） ----
-let calcSelection = [];   // 试算的组合
-let calcStepsHtml = "";   // 求根后的步骤/结果
-
-function renderCalcPanel(){
-  const owned = state.codes.slice().sort((a,b) => a - b);
-  const slotHtml = calcSelection.length
-    ? calcSelection.map(n => `<span class="calc-slot-num">${n}</span>`).join("")
-    : "— 点下面的数字开始组合 —";
-  const digitsHtml = Array.from({length:10}, (_, n) => {
-    const has = owned.includes(n);
-    return `<button class="calc-digit" onclick="calcTap(${n})" style="${has ? "box-shadow:var(--glow);border-color:var(--accent);" : ""}" title="${has ? "已收集" : "未收集"}">${n}</button>`;
+function renderRulePanel(){
+  const rows = RULES.map(r => {
+    const revealed = ruleRevealed(r);
+    return `<div class="rule-row ${revealed ? "revealed" : ""}">
+      <span class="rule-icon">${r.icon}</span>
+      <div class="rule-body"><b>${r.title}</b><p>${revealed ? r.text : `<span class="rule-unknown">${r.hint}</span>`}</p></div>
+    </div>`;
   }).join("");
-  const bagHtml = owned.length
-    ? owned.map(n => `<span class="code-chip"><span class="chip-name">${CODE_NAMES[n]}</span><span class="chip-num">${n}</span></span>`).join("")
-    : '<span class="bag-empty">口袋还空着。去「物件」读读那些文字，数字碎片会落进来。</span>';
-  const doorHtml = Object.keys(DOORS).map(name => {
-    const d = DOORS[name];
-    const opened = state.flags[d.doneFlag];
-    return `<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed var(--accent-dim);"><span>${opened ? "🚪" : "🔒"} ${name}</span><span style="opacity:.6;">${opened ? "已开" : `根数 ${d.root} · 契数 ${d.count}`}</span></div>`;
-  }).join("");
-
   mainEl.innerHTML = `
-    <div class="panel-title">钟码算盘 // ${state.timeline === "A" ? DATE_A_SHORT : DATE_B_SHORT}</div>
-    <div class="panel-section">钟码口袋</div>
-    <div class="code-bag">${bagHtml}</div>
-    <div class="panel-section">数字根试算</div>
-    <div class="calc-slot">${slotHtml}</div>
-    <div class="calc-steps">${calcStepsHtml}</div>
-    <div class="calc-digits">${digitsHtml}</div>
-    <div class="calc-actions">
-      <button class="action-btn ghost" onclick="calcBackspace()">退格</button>
-      <button class="action-btn ghost" onclick="calcClear()">清空</button>
-      <button class="action-btn" onclick="calcCompute()">求根</button>
-    </div>
-    <div class="panel-section">被卡住的门</div>
-    <div style="font-size:12px;margin-top:4px;">${doorHtml}</div>
-    <div class="hint">开门规则：每扇门刻着「根数」和「契数」。挑恰好「契数」个已收集的钟码，让它们的「数字根」等于「根数」。去「物件」点锁住的物件，放入钟码就能开锁。</div>
+    <div class="panel-title">B7 层 · 规则</div>
+    <div class="hint" style="margin-bottom:12px;">翻看「物件」里的线索，规则会一条条浮出来。逃出这层楼，靠的不是蛮力，是守规矩。</div>
+    ${rows}
   `;
 }
 
-function calcTap(n){
-  calcSelection.push(n);
-  renderCalcPanel();
-}
-function calcBackspace(){
-  calcSelection.pop();
-  renderCalcPanel();
-}
-function calcClear(){
-  calcSelection = [];
-  calcStepsHtml = "";
-  renderCalcPanel();
-}
-function calcCompute(){
-  if(!calcSelection.length) return;
-  const nums = calcSelection.slice();
-  const sum = nums.reduce((a,b) => a + b, 0);
-  const root = digitalRoot(nums);
-  let steps = `${nums.join(" + ")} = ${sum}`;
-  if(sum > 9) steps += ` → ${String(sum).split("").join(" + ")} = ${root}`;
-  let result = `数字根 = <b>${root}</b>`;
-  if(nums.some(n => n === 0 || n === 9) && nums.length > 1){
-    result += `<br><span style="opacity:.6;">（往组合里塞 0 或 9，数字根往往不变——钟码最会骗人的地方。）</span>`;
-  }
-  calcStepsHtml = `<div class="calc-steps-line">${steps}</div><div class="calc-result">${result}</div>`;
-  renderCalcPanel();
-}
+// ---------- 规则选择（关键节点） ----------
+const CHOICES = [
+  { key:"coffeeRule", title:"茶水间", desc:"你渴了。茶水间的咖啡机里，永远只有半杯咖啡。", options:[{label:"喝一口，够了就行", ok:true},{label:"把它倒满", ok:false}] },
+  { key:"printerRule", title:"打印机", desc:"午夜十二点，打印机自己响了，吐出一张纸。", options:[{label:"不看，也不碰", ok:true},{label:"捡起来看看", ok:false}] },
+  { key:"elevatorRule", title:"电梯", desc:"你想逃出 B7 层，走进电梯。按钮面板上只有奇数层亮着。", options:[{label:"按奇数层", ok:true},{label:"按偶数层", ok:false}] },
+];
+let choiceIndex = 0;
 
-// ---- 开门：放置格子 ----
-let doorName = null;   // 当前要开的门
-let doorSlots = [];    // 放置格子里的数字（null = 空）
-
-function openDoorUI(name){
-  const door = DOORS[name];
-  if(!door) return;
-  if(state.flags[door.doneFlag]){ showQuip("这扇门已经开过了。", "normal"); return; }
-  doorName = name;
-  doorSlots = Array(door.count).fill(null);
-  renderDoorPopup();
-  $("#door-popup").classList.add("show");
+function startRuleChoice(){
+  choiceIndex = 0;
+  renderChoice();
+  $("#choice-popup").classList.add("show");
 }
-function closeDoor(){
-  $("#door-popup").classList.remove("show");
-  doorName = null;
-  doorSlots = [];
+function renderChoice(){
+  const c = CHOICES[choiceIndex];
+  $("#choice-title").textContent = c.title;
+  $("#choice-desc").textContent = c.desc;
+  $("#choice-options").innerHTML = c.options.map((o,i) => `<button class="action-btn" onclick="pickChoice(${i})">${o.label}</button>`).join("");
 }
-function doorPick(n){
-  const idx = doorSlots.indexOf(null);
-  if(idx === -1) return;
-  if(doorSlots.includes(n)) return;   // 同一个数字不能重复放
-  if(!state.codes.includes(n)) return;
-  doorSlots[idx] = n;
-  renderDoorPopup();
-}
-function doorSlotTap(i){
-  if(doorSlots[i] === null) return;
-  doorSlots[i] = null;
-  renderDoorPopup();
-}
-function confirmDoor(){
-  const nums = doorSlots.filter(n => n !== null);
-  const res = checkDoor(doorName, nums);
-  if(!res.ok){
-    $("#door-err").textContent = res.msg;
-    return;
+function pickChoice(i){
+  const c = CHOICES[choiceIndex];
+  state.flags[c.key] = c.options[i].ok;
+  choiceIndex++;
+  if(choiceIndex >= CHOICES.length){
+    $("#choice-popup").classList.remove("show");
+    finishRuleChoice();
+  }else{
+    renderChoice();
   }
-  state.flags[DOORS[doorName].doneFlag] = true;
+}
+function finishRuleChoice(){
+  const allOk = CHOICES.every(c => state.flags[c.key] === true);
+  state.flags.reportSent = true;
   saveState();
-  closeDoor();
-  showQuip(randomQuip("decryptOk"), "ok");
-  renderFiles();
-  renderNavDots();
-  renderGoal();
+  if(allOk){
+    showQuip("三条规矩都守住了。电梯门，终于亮起了离去的按钮。", "ok");
+    renderMail();
+    renderNavDots();
+    renderGoal();
+    setTimeout(triggerEnding, 700);
+  }else{
+    showQuip("坏了。你违反了规矩。这层楼，不打算放你走了。", "fail");
+    triggerBadEnding();
+  }
 }
-function renderDoorPopup(){
-  const door = DOORS[doorName];
-  $("#door-title").textContent = doorName;
-  $("#door-meta").innerHTML = `根数 <b>${door.root}</b> · 契数 <b>${door.count}</b>`;
-  $("#door-desc").textContent = door.desc;
-  $("#door-slots").innerHTML = doorSlots.map((n, i) => `
-    <div class="door-slot ${n !== null ? "filled" : ""}" onclick="doorSlotTap(${i})">
-      ${n !== null ? `<span class="slot-name">${CODE_NAMES[n]}</span><span class="slot-num">${n}</span>` : "<span>空</span>"}
-    </div>
-  `).join("");
-  const used = doorSlots.filter(n => n !== null);
-  const avail = state.codes.filter(n => !used.includes(n)).sort((a,b) => a - b);
-  $("#door-bag").innerHTML = avail.length
-    ? avail.map(n => `<span class="code-chip" onclick="doorPick(${n})"><span class="chip-name">${CODE_NAMES[n]}</span><span class="chip-num">${n}</span></span>`).join("")
-    : '<span class="bag-empty" style="opacity:.5;font-size:12px;">口袋空了。</span>';
-  $("#door-err").textContent = "";
+function triggerBadEnding(){
+  if(state.flags.endingSeen) return;
+  state.flags.endingSeen = true;
+  saveState();
+  $("#ending-text").textContent = "你被「录用」了。\n\n茶水间多了一个永远泡咖啡的人，打印机前多了一个永远低头看纸的人，电梯里多了一个再也按不到离去键的人。\n\n（怪谈降临也要上班 · 坏结局 · 试玩版）";
+  $("#ending").classList.add("show");
 }
 
 // ---- 结局 ----
@@ -1297,12 +1048,8 @@ function triggerEnding(){
   if(state.flags.endingSeen) return;
   state.flags.endingSeen = true;
   saveState();
-  let extra = "";
-  if(state.flags.sawPhoto){
-    extra = "\n\n后来我才想明白，井水里那道多出来的轮廓，大概就是隔着一整面镜子，正在读这段话的另一个人。";
-  }
   $("#ending-text").textContent =
-    "一面镜子，两个世界，一场谁也不肯先服软的争执。\n我们隔着一整场“倒着长的记忆”，把散落的钟码一片片归约成同一个数字，再用一封又一封荒唐的信，把事情，慢慢拼对了。" + extra + "\n\n（镜中来客 · 苔丝与反钟镇 · 可玩骨架 Demo · 完）";
+    "电梯停在了一层你认识的地方。\n门打开，是熟悉的办公区，是白班同事工位上的台灯。\n\n你活过了今晚。\n三条规矩，一条都没碰。\n\n交接记录本上，白班写来了一行字：\n「守规矩的人，才配下班。」\n\n（怪谈降临也要上班 · 试玩版 · 完）";
   $("#ending").classList.add("show");
 }
 
@@ -1317,7 +1064,7 @@ function renderNavDots(){
 // ---- 时钟 ----
 function tickClock(){
   const d = new Date();
-  $("#clock").textContent = (state.timeline === "A" ? "MIRROR@" + DATE_A_SHORT + " " : "MIRROR@" + DATE_B_SHORT + " ") + d.toLocaleTimeString("zh-CN",{hour12:false});
+  $("#clock").textContent = (state.timeline === "A" ? "值班@" + DATE_A_SHORT + " " : "值班@" + DATE_B_SHORT + " ") + d.toLocaleTimeString("zh-CN",{hour12:false});
 }
 setInterval(tickClock, 1000);
 
@@ -1342,33 +1089,27 @@ function catIdle(){
 // 被点击后的引导提示：按进度给出沉浸式的一句指引
 function catHint(){
   if(!state.sendUnlocked){
-    return "他刚醒在反钟镇，什么都不记得。让他去「书信」读读木屋门后那些话——信要一封一封读，读完，才有新的东西肯醒过来。";
+    return "他刚进夜班，什么都不懂。让他去「交接记录」翻翻——白班留了话，一页一页读，读完，才轮到他写。";
   }
   if(!state.crossUnlocked){
-    return "镜子在等他先开口。让他去「书信」写点什么，投进镜子里——那头，有人会接住的。";
+    return "交接本在等他先开口。让他写一页，投进去——白班的人，会接住的。";
   }
-  if(!state.flags.decryptedReport){
-    if(!state.codes.length){
-      return "时间碎成了钟码，藏在字里行间。让她去阁楼翻翻旧物件——怀表、老照片，都悄悄记着数字。";
-    }
-    return "井边的锈铁盒在等他。凑两个钟码，去「物件」点开那卷争执记录的锁，把数字放进格子里，锁会自己弹开。";
+  if(!allRulesRevealed()){
+    return "这层楼有它自己的规矩。让他去「物件」翻翻那些纸片——咖啡、打印机、电梯，规矩都写在缝里。";
   }
   if(!state.flags.ideaRequested){
-    return "他知道了那场赌气。让他把心里的话写进信里，问问镜子那头——可有什么法子，能让两个要面子的家伙体面和好。";
+    return "他读懂了三条规矩。让他写一页交接，问问白班——猫说的，到底对不对。";
   }
   if(!state.flags.ideaReceived){
-    return "轮到她出主意了。让她去「书信」，把那个「续杯」的念头，轻轻寄过去。";
-  }
-  if(!state.flags.clockTicked){
-    return "钟还卡在六点。让他回反钟镇，凑四个钟码，去「物件」点开钟楼齿轮闸的锁，把数字放进格子里。钟会往前走一分钟。";
+    return "轮到白班回话了。去「交接记录」，把三条规矩写给他。";
   }
   if(!state.flags.reportSent){
-    return "钟走起来了。让他把这件好事写下来，寄给镜子那头，报个喜。";
+    return "规矩到了。该他做选择了——茶水间、打印机、电梯。守得住，就下得来。";
   }
   if(!state.flags.endingSeen){
-    return "故事到了最后。让她去读那封回信，好好看看结局。";
+    return "夜班，要结束了。让他坐进电梯，按下离去的按钮。";
   }
-  return "故事已经画上句号。猫会一直记得——这一整场，荒唐又温暖的续杯。";
+  return "夜班结束了。猫会记得的——这一晚，规矩没有被打破。";
 }
 
 function toggleCatHint(){
